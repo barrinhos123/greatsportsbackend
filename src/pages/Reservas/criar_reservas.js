@@ -660,6 +660,8 @@ const CriarReservas = () => {
                     <CardText>
                       <Row>
                         {camposDisponiv.map((value, index) => {
+                          var campoToShow = value.split(" ")
+                          console.log(campoToShow)
                           return (
                             <Col
                               key={index}

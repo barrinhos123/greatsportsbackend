@@ -85,16 +85,15 @@ function InfoAlunosModal(props) {
                 </Col>
                 <Col md={2}>
                 <Button id="ckeckButton1" color={colorBTN1} onClick={async() => {
-                            var check = await emailCheck(document.getElementById("emailId").value,"nomeId","ccId" )
-                            if(check) {
-                              setColorBTN1("primary")
-                            } else {
-                              setColorBTN1("secondary")
-                            }
-                          }} >
-                            <Check></Check>
-                          </Button>
-                  
+                    var check = await emailCheck(document.getElementById("emailId").value,"nomeId","ccId" )
+                        if(check) {
+                            setColorBTN1("primary")
+                        } else {
+                            setColorBTN1("secondary")
+                        }
+                    }}>
+                    <Check></Check>
+                    </Button>
                 </Col>
               </Row>
             </FormGroup>

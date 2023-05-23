@@ -8,6 +8,8 @@ export const historicoDeContratosCollection = "historicoDeContratos"
 export const historicoDePagamentos = "historicoDePagamentos"
 export const treinadoresCollection = "treinadores"
 
+export const diasDaSemana = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"]
+
 export const nomesCampos = ['Lexus', 'NX', 'ES', 'RX', 'UX', 'LC'];
 export const niveis = ["5+", "5" , "5-" , "4+" , "4" , "4-","3+", "3" , "3-" , "2" , "1"]
 
