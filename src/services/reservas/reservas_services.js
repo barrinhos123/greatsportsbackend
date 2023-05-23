@@ -198,7 +198,7 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
 
 export async function editarDadosReserva(reservaId, jogador1estado,jogador2estado
 ,jogador3estado
-,jogador4estado
+,jogador4estado, campo, novaListaDeJogadores
 ) {
   try {
     console.log(reservaId)
@@ -206,7 +206,8 @@ export async function editarDadosReserva(reservaId, jogador1estado,jogador2estad
     await firebase
       .firestore()
       .collection(reservasCollection)
-      .doc(reservaId).set({
+      .doc(reservaId).set({campo: campo,
+        jogadores: novaListaDeJogadores,
         jogador1estado,jogador2estado,jogador3estado,jogador4estado
       },{merge: true})
       return true;

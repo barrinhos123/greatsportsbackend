@@ -21,8 +21,12 @@ import { element } from "prop-types"
 import { Aula } from "models/aula"
 import { createAula } from "services/aulas/aulas_services"
 import { PlusCircle } from "react-bootstrap-icons"
+import { useSelector } from "react-redux"
+import { selecttreinadores } from "store/treinadores/treinadores_reducer"
+import { niveis } from "services/consts"
 
 function AdicionarAulasModal(props) {
+  var treinadores = useSelector(selecttreinadores)
   const [isOpen, setIsOpen] = useState(false)
   const [horaInicial, setHoraInicial] = useState("00:00")
   const [horaFinal, setHoraFinal] = useState("00:00")
@@ -69,7 +73,7 @@ function AdicionarAulasModal(props) {
           setIsOpen(!isOpen)
         }}
       >
-        Adicionar Reserva
+        Adicionar Aula
       </Button>
       <Modal
         isOpen={isOpen}
@@ -82,7 +86,7 @@ function AdicionarAulasModal(props) {
             setIsOpen(!isOpen)
           }}
         >
-          Modal title
+          Adicionar Aula
         </ModalHeader>
         <ModalBody>
           <Form>
@@ -102,17 +106,20 @@ function AdicionarAulasModal(props) {
               </Row>
             </FormGroup>
             <FormGroup>
+            
+            </FormGroup>
+            <FormGroup>
             <Row>
                 <Col md={3}>
-                  <p> Duração </p>
+                  <p> Tipo </p>
                 </Col>
                 <Col md={9}>
                 <Input onChange={() => {
-                      console.log(document.getElementById("selectTime").value)
-                    }} type="select" name="select" id="selectTime">
-                      <option>60</option>
-                      <option>90</option>
-                      <option>120</option>
+                      console.log(document.getElementById("tipoAula").value)
+                    }} type="select" name="select" id="tipoAula">
+                      <option>Experimental</option>
+                      <option>Academia</option>
+                      <option>PAX</option>
                     </Input>
                 </Col>
               </Row>
@@ -210,23 +217,35 @@ function AdicionarAulasModal(props) {
                   <p>Professor</p>
                 </Col>
                 <Col md={9}>
-                  <Input
-                    type="email"
-                    name="email"
-                    id="professorInput"
-                    placeholder="Professor"
-                  />
+                <Input type="select" name="select" id="professorInput">
+                   {treinadores.map((elem,index) => {
+                    return <option key={index}>{elem.nome}</option>
+                   })}
+                  </Input>
+                
+                  
                 </Col>
               </Row>
             </FormGroup>
+           
             <FormGroup>
               <Row>
                 <Col md={3}>
                   <p>Nivel</p>
                 </Col>
                 <Col md={9}>
-                  <Input type="select" name="select" id="nivelSelect">
-                    <option>1</option>
+                  <Input
+                    value={nivel}
+                    onChange={e => {
+                      setNivel(e.target.value)
+                    }}
+                    type="select"
+                    name="select"
+                    id="nivelSelect"
+                  >
+                    {niveis.map((elem,index) => {
+                      return <option key={index}>{elem}</option>
+                    })}
                   </Input>
                 </Col>
               </Row>
@@ -278,6 +297,8 @@ function AdicionarAulasModal(props) {
               newAula.estado = 1
               newAula.nome = document.getElementById("aulaInput").value
               newAula.alunos = []
+              newAula.alunosPAX = []
+              newAula.tipo = document.getElementById("tipoAula").value
               newAula.campos = campoEscolhido
               newAula.diaFinal = endDate
               newAula.diaInicial = startDate
@@ -288,7 +309,7 @@ function AdicionarAulasModal(props) {
                 document.getElementById("professorInput").value
               newAula.weekDay =
                 document.getElementById("weekdaySelect").selectedIndex
-              newAula.nivel = document.getElementById("nivelSelect").value
+              newAula.nivel = nivel
               console.log(newAula)
               /*  setIsOpen(!isOpen) */
               var aux = await createAula(newAula)
@@ -302,7 +323,7 @@ function AdicionarAulasModal(props) {
               }
             }}
           >
-            Adicionar Reserva
+            Adicionar Aula
           </Button>
           <Button
             color="secondary"

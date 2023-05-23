@@ -7,6 +7,10 @@ export const contratosCollection = "contratos"
 export const historicoDeContratosCollection = "historicoDeContratos"
 export const historicoDePagamentos = "historicoDePagamentos"
 export const treinadoresCollection = "treinadores"
+
+export const nomesCampos = ['Lexus', 'NX', 'ES', 'RX', 'UX', 'LC'];
+export const niveis = ["5+", "5" , "5-" , "4+" , "4" , "4-","3+", "3" , "3-" , "2" , "1"]
+
 //FB values --------------------
 export const semana = "Semana"
 export const fdsEFeriados = "Fins de semana e Feriados"

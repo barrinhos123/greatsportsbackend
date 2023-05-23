@@ -22,6 +22,7 @@ import TreinadoresMainScreen from "pages/treinadores/treinadores_main_screen"
 import CriarReservasSemRegistoScreen from "pages/Reservas/criar_reservas_sem_registo"
 import AdicioanarBancoDeHoras from "pages/utilizadores/adicionar_banco_de_horas"
 import ContratosPeriodicos from "pages/contratos/contratos_periodicos"
+import RegistarJogador from "pages/utilizadores/registar_jogador"
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -30,6 +31,7 @@ const userRoutes = [
   { path: "/descontos", component: Descontos },
   { path: "/aulas", component: AulasScreen },
   { path: "/procurarUtilizadores", component: ProcurarUtilzadoresScreen },
+  { path: "/registarUtilizadores", component: RegistarJogador },
   { path: "/contratos", component: ContratosScree },
   { path: "/contratosPeriodicos", component: ContratosPeriodicos },
   { path: "/adicionarReservas", component: CriarReservas },

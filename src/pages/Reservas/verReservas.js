@@ -13,7 +13,7 @@ import {
 } from "reactstrap"
 import { anularReservaPorUser, getReservaById } from "services/reservas/reservas_services"
 import QRCode from "qrcode"
-import { enviaEmailParaUmJogador, enviaEmails } from "services/email/email_services"
+import { enviaEmailParaUmJogador } from "services/email/email_services"
 import moment from "moment"
 import EditarReservasModal from "components/modals/editar_reservas_modal"
 
@@ -80,14 +80,12 @@ function VerReservasScreen() {
       }
       var myDate = new Date(value.horaIncial*1000);
       var newDateObj = moment(myDate).subtract(180, 'm').toDate();
-
       console.log("newDateObj")
       console.log(newDateObj)
       gerarQRCode1(value.jogador1estado.qrcode.toString())
       gerarQRCode2(value.jogador2estado.qrcode.toString())
       gerarQRCode3(value.jogador3estado.qrcode.toString())
       gerarQRCode4(value.jogador4estado.qrcode.toString())
-
       setReservaData(value)
       setIsLoading(false)
     })

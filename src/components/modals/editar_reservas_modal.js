@@ -1,4 +1,6 @@
+import { ProcuraReserva } from "models/reserva";
 import React, { useEffect, useState } from "react"
+import { Check } from "react-bootstrap-icons";
 import {
   Button,
   Col,
@@ -12,10 +14,29 @@ import {
   ModalHeader,
   Row,
 } from "reactstrap"
-import { editarDadosReserva } from "services/reservas/reservas_services"
+import { checkIfUserExists, editarDadosReserva, retornaCamposIndisponíveisNaHora } from "services/reservas/reservas_services"
 
 function EditarReservasModal(props) {
   const [isOpen, setIsOpen] = useState(false)
+
+  const [campo,setCampo] = useState(props.reserva.campo);
+  const [camposDisponiv, setCamposDisponiv] = useState([])
+  const numeroDeCampos = 6
+  const [campoEscolhido, setCampoEscolhido] = useState(props.reserva.campo)
+
+  function removeCamposRepetidos(campoosInsdis) {
+    console.log("A localizacao dos campos é :")
+    console.log(props.reserva.localizacao);
+    var listaDeCampos = []
+    var novaLista = []
+    for (var i = 1; i <= numeroDeCampos; i++) {
+      var stringAux = "Campo " + i
+      if (campoosInsdis.includes(stringAux) == false) {
+        listaDeCampos.push(stringAux)
+      }
+    }
+    setCamposDisponiv(listaDeCampos)
+  }
   
   const [email1, setEmail1] = useState(props.reserva.jogador1estado.email)
   const [email2, setEmail2] = useState(props.reserva.jogador2estado.email)
@@ -31,6 +52,131 @@ function EditarReservasModal(props) {
   const [cc2, setCC2] = useState(props.reserva.jogador2estado.cc)
   const [cc3, setCC3] = useState(props.reserva.jogador3estado.cc)
   const [cc4, setCC4] = useState(props.reserva.jogador4estado.cc)
+
+  const [colorBTN1 , setColorBTN1] = useState("secondary")
+  const [colorBTN2 , setColorBTN2] = useState("secondary")
+  const [colorBTN3 , setColorBTN3] = useState("secondary")
+  const [colorBTN4 , setColorBTN4] = useState("secondary")
+
+  async function emailCheck(email, ccId) {
+    var primeiroNome 
+    var ultimoNome
+    var isEmail1 = await checkIfUserExists(email)
+
+    if(Object.keys(isEmail1).length == 0){
+      alert('O email não está registado')
+      return false
+    }
+    if(typeof isEmail1.primeiroNome != "undefined") {
+      primeiroNome = isEmail1.primeiroNome + " "
+    }
+    if(typeof isEmail1.ultimoNome != "undefined") {
+      ultimoNome = isEmail1.ultimoNome
+    }
+    if(typeof isEmail1.numeroDoCC != "undefined") {
+      setCC1(isEmail1.numeroDoCC)
+    } else {
+      document.getElementById(ccId).value = null
+    }
+    setNome1(primeiroNome + ultimoNome)
+
+    if(typeof isEmail1.primeiroNome != "undefined" && typeof isEmail1.ultimoNome != "undefined" && typeof isEmail1.numeroDoCC != "undefined" ) {
+      return true
+    } 
+    else {
+      return false;
+    }
+  }
+
+  async function emailCheck2(email, ccId) {
+    var primeiroNome 
+    var ultimoNome
+    var isEmail1 = await checkIfUserExists(email)
+
+    if(Object.keys(isEmail1).length == 0){
+      alert('O email não está registado')
+      return false
+    }
+    if(typeof isEmail1.primeiroNome != "undefined") {
+      primeiroNome = isEmail1.primeiroNome + " "
+    }
+    if(typeof isEmail1.ultimoNome != "undefined") {
+      ultimoNome = isEmail1.ultimoNome
+    }
+    if(typeof isEmail1.numeroDoCC != "undefined") {
+      setCC2(isEmail1.numeroDoCC)
+    } else {
+      document.getElementById(ccId).value = null
+    }
+    setNome2(primeiroNome + ultimoNome)
+
+    if(typeof isEmail1.primeiroNome != "undefined" && typeof isEmail1.ultimoNome != "undefined" && typeof isEmail1.numeroDoCC != "undefined" ) {
+      return true
+    } 
+    else {
+      return false;
+    }
+  }
+
+  async function emailCheck3(email, ccId) {
+    var primeiroNome 
+    var ultimoNome
+    var isEmail1 = await checkIfUserExists(email)
+
+    if(Object.keys(isEmail1).length == 0){
+      alert('O email não está registado')
+      return false
+    }
+    if(typeof isEmail1.primeiroNome != "undefined") {
+      primeiroNome = isEmail1.primeiroNome + " "
+    }
+    if(typeof isEmail1.ultimoNome != "undefined") {
+      ultimoNome = isEmail1.ultimoNome
+    }
+    if(typeof isEmail1.numeroDoCC != "undefined") {
+      setCC3(isEmail1.numeroDoCC)
+    } else {
+      document.getElementById(ccId).value = null
+    }
+    setNome3(primeiroNome + ultimoNome)
+
+    if(typeof isEmail1.primeiroNome != "undefined" && typeof isEmail1.ultimoNome != "undefined" && typeof isEmail1.numeroDoCC != "undefined" ) {
+      return true
+    } 
+    else {
+      return false;
+    }
+  }
+
+  async function emailCheck4(email, ccId) {
+    var primeiroNome 
+    var ultimoNome
+    var isEmail1 = await checkIfUserExists(email)
+
+    if(Object.keys(isEmail1).length == 0){
+      alert('O email não está registado')
+      return false
+    }
+    if(typeof isEmail1.primeiroNome != "undefined") {
+      primeiroNome = isEmail1.primeiroNome + " "
+    }
+    if(typeof isEmail1.ultimoNome != "undefined") {
+      ultimoNome = isEmail1.ultimoNome
+    }
+    if(typeof isEmail1.numeroDoCC != "undefined") {
+      setCC4(isEmail1.numeroDoCC)
+    } else {
+      document.getElementById(ccId).value = null
+    }
+    setNome4(primeiroNome + ultimoNome)
+
+    if(typeof isEmail1.primeiroNome != "undefined" && typeof isEmail1.ultimoNome != "undefined" && typeof isEmail1.numeroDoCC != "undefined" ) {
+      return true
+    } 
+    else {
+      return false;
+    }
+  }
 
   useEffect(() => {
    
@@ -67,7 +213,7 @@ function EditarReservasModal(props) {
                 <Col md={3}>
                   <p>Email</p>
                 </Col>
-                <Col md={9}>
+                <Col md={7}>
                   <Input
                     value={email1}
                     onChange={e => {
@@ -78,6 +224,18 @@ function EditarReservasModal(props) {
                     id="email1Input"
                   />
                 </Col>
+                <Col md={2}>
+                          <Button id="ckeckButton1" color={colorBTN1} onClick={async() => {
+                            var check = await emailCheck(document.getElementById("email1Input").value,"cc1Input" )
+                            if(check) {
+                              setColorBTN1("primary")
+                            } else {
+                              setColorBTN1("secondary")
+                            }
+                          }} >
+                            <Check></Check>
+                          </Button>
+                          </Col>
               </Row>
             </FormGroup>
             <FormGroup>
@@ -114,7 +272,9 @@ function EditarReservasModal(props) {
                     id="cc1Input"
                   />
                 </Col>
+                
               </Row>
+              
             </FormGroup>
             <h5>Jogador 2</h5>
             <FormGroup>
@@ -122,7 +282,7 @@ function EditarReservasModal(props) {
                 <Col md={3}>
                   <p>Email</p>
                 </Col>
-                <Col md={9}>
+                <Col md={7}>
                   <Input
                     value={email2}
                     onChange={e => {
@@ -132,6 +292,18 @@ function EditarReservasModal(props) {
                     name="email2Input"
                     id="email2Input"
                   />
+                </Col>
+                <Col md={2}>
+                    <Button id="ckeckButton2" color={colorBTN2} onClick={async() => {
+                    var check = await emailCheck2(document.getElementById("email2Input").value,"cc2Input" )
+                    if(check) {
+                        setColorBTN2("primary")
+                    } else {
+                        setColorBTN2("secondary")
+                    }
+                    }} >
+                <Check></Check>
+                </Button>
                 </Col>
               </Row>
             </FormGroup>
@@ -177,7 +349,7 @@ function EditarReservasModal(props) {
                 <Col md={3}>
                   <p>Email</p>
                 </Col>
-                <Col md={9}>
+                <Col md={7}>
                   <Input
                     value={email3}
                     onChange={e => {
@@ -188,7 +360,20 @@ function EditarReservasModal(props) {
                     id="email3Input"
                   />
                 </Col>
+                <Col md={2}>
+                    <Button id="ckeckButton3" color={colorBTN3} onClick={async() => {
+                    var check = await emailCheck3(document.getElementById("email3Input").value,"cc3Input" )
+                    if(check) {
+                        setColorBTN3("primary")
+                    } else {
+                        setColorBTN3("secondary")
+                    }
+                    }} >
+                <Check></Check>
+                </Button>
+                </Col>
               </Row>
+              
             </FormGroup>
             <FormGroup>
               <Row>
@@ -232,7 +417,7 @@ function EditarReservasModal(props) {
                 <Col md={3}>
                   <p>Email</p>
                 </Col>
-                <Col md={9}>
+                <Col md={7}>
                   <Input
                     value={email4}
                     onChange={e => {
@@ -242,6 +427,18 @@ function EditarReservasModal(props) {
                     name="email4Input"
                     id="email4Input"
                   />
+                </Col>
+                <Col md={2}>
+                    <Button id="ckeckButton4" color={colorBTN4} onClick={async() => {
+                    var check = await emailCheck4(document.getElementById("email4Input").value,"cc4Input" )
+                    if(check) {
+                        setColorBTN4("primary")
+                    } else {
+                        setColorBTN4("secondary")
+                    }
+                    }} >
+                <Check></Check>
+                </Button>
                 </Col>
               </Row>
             </FormGroup>
@@ -281,6 +478,47 @@ function EditarReservasModal(props) {
                 </Col>
               </Row>
             </FormGroup>
+        <h5>Campos</h5>
+        <Row style={{ paddingBottom: "20px"}}>Campo da reserva: {campo}</Row>
+        <Button style={{marginBottom: "20px"}} color="primary" onClick={async() => {
+             var procuraReserva = new ProcuraReserva()
+             procuraReserva.duracaoDaReserva = props.reserva.duracao
+             procuraReserva.horaDaReserva = props.reserva.horaIncial.toDate()
+             procuraReserva.localizacao = props.reserva.localizacao
+             console.log('BP0')
+             var camposs = await retornaCamposIndisponíveisNaHora(
+               procuraReserva
+             )
+             removeCamposRepetidos(camposs)
+        }}>Mostrar campos disponíveis</Button>
+
+        <Row>
+        <Row>
+                        {camposDisponiv.map((value, index) => {
+                          return (
+                            <Col
+                              key={index}
+                              md={4}
+                              style={{ paddingBottom: "10px" }}
+                            >
+                              <Button
+                                outline={campoEscolhido == value ? false : true}
+                                color="primary"
+                                onClick={() => {
+                                  if (campoEscolhido != value) {
+                                    setCampoEscolhido(value)
+                                  } else {
+                                    setCampoEscolhido(null)
+                                  }
+                                }}
+                              >
+                                {value}
+                              </Button>
+                            </Col>
+                          )
+                        })}
+                      </Row>
+        </Row>
           </Form>
           
         </ModalBody>
@@ -294,7 +532,7 @@ function EditarReservasModal(props) {
                 json.jogador2estado = {}
                 json.jogador3estado = {}
                 json.jogador4estado = {}
-
+                json.campo = campoEscolhido;
                 json.jogador1estado.cc = cc1.toString()
               json.jogador1estado.nome = nome1
                 json.jogador1estado.email = email1
@@ -307,8 +545,9 @@ function EditarReservasModal(props) {
                 json.jogador4estado.cc = cc4.toString()
                 json.jogador4estado.nome = nome4
                 json.jogador4estado.email = email4
+                json.novaListaDeJogadores = [email1,email2,email3,email4]
 
-                var res = await editarDadosReserva(props.reservaID, json.jogador1estado,json.jogador2estado,json.jogador3estado,json.jogador4estado)
+                var res = await editarDadosReserva(props.reservaID, json.jogador1estado,json.jogador2estado,json.jogador3estado,json.jogador4estado, json.campo, json.novaListaDeJogadores)
                 if(res) {
                     alert('Dados alterados com sucesso')
                     setIsOpen(!isOpen)
@@ -322,6 +561,7 @@ function EditarReservasModal(props) {
           </Button>
           <Button
             onClick={() => {
+                
               setIsOpen(!isOpen)
             }}
           >

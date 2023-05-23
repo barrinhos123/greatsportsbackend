@@ -11,7 +11,7 @@ function RemoveModal(props) {
       return true
     } catch (error) {
       console.error(error)
-      return null
+      return false
     }
   }
 
@@ -41,9 +41,17 @@ function RemoveModal(props) {
         </ModalHeader>
 
         <ModalFooter>
-          <Button
+          <Button color="primary"
             onClick={async () => {
-              await remove(props.collection, props.docID)
+              var res = await remove(props.collection, props.docID)
+              if(res) {
+                alert('Aula Removida Com sucesso')
+                setIsOpen(!isOpen)
+              } else {
+                alert('Erro a remover a aula')
+                setIsOpen(!isOpen)
+              }
+              
             }}
           >
             {props.removeLabel}

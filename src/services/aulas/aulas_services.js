@@ -40,12 +40,14 @@ export async function createAula(newAula) {
         diaInicial: firebase.firestore.Timestamp.fromDate(aula.diaInicial),
         diaFinal: firebase.firestore.Timestamp.fromDate(aula.diaFinal),
         professor: aula.professor,
-        alunos: aula.alunos,
-        alunosPAX:aula.alunosPAX,
+        alunos: [],
+        alunosData: {},
         nivel: aula.nivel,
         estado: aula.estado,
         nome: aula.nome,
         campos: aula.campos,
+        tipo: aula.tipo,
+        
       })
       .then(value => {
         return true
@@ -79,6 +81,7 @@ export async function updateAula(newAula, aulaId) {
           estado: aula.estado,
           nome: aula.nome,
           campos: aula.campos,
+          tipo: aula.tipo,
         },
         { merge: true }
       )
@@ -102,6 +105,28 @@ export async function adicinarAlunosAAula(usersID, aulaID) {
       .set(
         {
           alunos: firebase.firestore.FieldValue.arrayUnion(...usersID),
+        },
+        { merge: true }
+      )
+    return true
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
+export async function adicionarAlunoEData(email,alunoData, aulaID) {
+  console.log(email)
+  console.log(aulaID)
+  try {
+    await firebase
+      .firestore()
+      .collection(aulasCollection)
+      .doc(aulaID)
+      .set(
+        {
+          alunos: firebase.firestore.FieldValue.arrayUnion(email),
+          alunoData: {[email]: {nome: alunoData.nome, cc: alunoData.cc, tel: alunoData.tel  }  }
         },
         { merge: true }
       )

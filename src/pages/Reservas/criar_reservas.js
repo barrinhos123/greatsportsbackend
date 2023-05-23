@@ -46,6 +46,7 @@ import AdicionarPagamentosModal from "components/modals/valor_do_pagamento_modal
 import { selectlocalizacao, setlocalizacao } from "store/localizacao/localizacao_reducer"
 import { setclasses } from "store/localizacao/classes_reducer"
 import { settreinadores } from "store/treinadores/treinadores_reducer"
+import { Check } from "react-bootstrap-icons"
 
 const CriarReservas = () => {
   function calcMaxDate(date) {
@@ -446,6 +447,41 @@ const CriarReservas = () => {
     }
   }
 
+  const [colorBTN1 , setColorBTN1] = useState("secondary")
+  const [colorBTN2 , setColorBTN2] = useState("secondary")
+  const [colorBTN3 , setColorBTN3] = useState("secondary")
+  const [colorBTN4 , setColorBTN4] = useState("secondary")
+
+  async function emailCheck(email, nomeId, ccId) {
+    var primeiroNome 
+    var ultimoNome
+    var isEmail1 = await checkIfUserExists(email)
+
+    if(Object.keys(isEmail1).length == 0){
+      alert('O email não está registado')
+      return false
+    }
+    if(typeof isEmail1.primeiroNome != "undefined") {
+      primeiroNome = isEmail1.primeiroNome + " "
+    }
+    if(typeof isEmail1.ultimoNome != "undefined") {
+      ultimoNome = isEmail1.ultimoNome
+    }
+    if(typeof isEmail1.numeroDoCC != "undefined") {
+      document.getElementById(ccId).value = isEmail1.numeroDoCC
+    } else {
+      document.getElementById(ccId).value = null
+    }
+    document.getElementById(nomeId).value = primeiroNome + ultimoNome
+
+    if(typeof isEmail1.primeiroNome != "undefined" && typeof isEmail1.ultimoNome != "undefined" && typeof isEmail1.numeroDoCC != "undefined" ) {
+      return true
+    } 
+    else {
+      return false;
+    }
+  }
+
   const rendera = () => {
     return (
       <Modal isOpen={isModalVisible} toggle={() => toggleModal()}>
@@ -664,14 +700,28 @@ const CriarReservas = () => {
                           <Label for="email1" sm={2}>
                             Email
                           </Label>
-                          <Col sm={10}>
+                          <Col sm={8}>
                             <Input
+                            onChange={() => {
+                              setColorBTN1("secondary")
+                            }}
                               type="email"
                               name="email"
                               id="email1"
-                              placeholder="example@email.pt"
                               required
                             />
+                          </Col>
+                          <Col sm={2}>
+                          <Button id="ckeckButton1" color={colorBTN1} onClick={async() => {
+                            var check = await emailCheck(document.getElementById("email1").value,"nome1","cc1" )
+                            if(check) {
+                              setColorBTN1("primary")
+                            } else {
+                              setColorBTN1("secondary")
+                            }
+                          }} >
+                            <Check></Check>
+                          </Button>
                           </Col>
                         </FormGroup>
                         <FormGroup style={{ paddingBottom: "10px" }} row>
@@ -680,10 +730,11 @@ const CriarReservas = () => {
                           </Label>
                           <Col sm={10}>
                             <Input
+
                               type="text"
                               name="email"
                               id="nome1"
-                              placeholder="Primeiro Ultimo"
+                              
                               required
                             />
                           </Col>
@@ -697,7 +748,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="cc1"
-                              placeholder="12345678"
+                              
                               required
                             />
                           </Col>
@@ -716,7 +767,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="nr1"
-                              placeholder="912345678"
+                              
                               required={pagamento1 === "MBway" ? true : false}
                             />
                           </Col>
@@ -822,14 +873,29 @@ const CriarReservas = () => {
                           <Label for="email2" sm={2}>
                             Email
                           </Label>
-                          <Col sm={10}>
+                          <Col sm={8}>
                             <Input
+                              onChange={() => {
+                                setColorBTN2("secondary")
+                              }}
                               type="email"
                               name="email"
                               id="email2"
-                              placeholder="example@email.pt"
+                              
                               required
                             />
+                          </Col>
+                          <Col  sm={2} >
+                          <Button   id="ckeckButton2" color={colorBTN2} onClick={async() => {
+                            var check = await emailCheck(document.getElementById("email2").value,"nome2","cc2" )
+                            if(check) {
+                              setColorBTN2("primary")
+                            } else {
+                              setColorBTN2("secondary")
+                            }
+                          }} >
+                            <Check></Check>
+                          </Button>
                           </Col>
                         </FormGroup>
                         <FormGroup style={{ paddingBottom: "10px" }} row>
@@ -841,7 +907,7 @@ const CriarReservas = () => {
                               type="text"
                               name="email"
                               id="nome2"
-                              placeholder="Primeiro Ultimo"
+                              
                               required
                             />
                           </Col>
@@ -855,7 +921,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="cc2"
-                              placeholder="12345678"
+                              
                               required
                             />
                           </Col>
@@ -874,7 +940,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="nr2"
-                              placeholder="912345678"
+                              
                               required={
                                 pagamento2 === "MBway" &&
                                 dividePagamento2 == true
@@ -1010,14 +1076,29 @@ const CriarReservas = () => {
                           <Label for="email3" sm={2}>
                             Email
                           </Label>
-                          <Col sm={10}>
+                          <Col sm={8}>
                             <Input
+                            onChange={() => {
+                              setColorBTN3("secondary")
+                            }}
                               type="email"
                               name="email"
                               id="email3"
-                              placeholder="example@email.pt"
+                              
                               required
                             />
+                          </Col>
+                          <Col  sm={2} >
+                          <Button id="ckeckButton3" color={colorBTN3} onClick={async() => {
+                            var check = await emailCheck(document.getElementById("email3").value,"nome3","cc3" )
+                            if(check) {
+                              setColorBTN3("primary")
+                            } else {
+                              setColorBTN3("secondary")
+                            }
+                          }} >
+                            <Check></Check>
+                          </Button>
                           </Col>
                         </FormGroup>
                         <FormGroup style={{ paddingBottom: "10px" }} row>
@@ -1029,7 +1110,7 @@ const CriarReservas = () => {
                               type="text"
                               name="email"
                               id="nome3"
-                              placeholder="Primeiro Ultimo"
+                              
                               required
                             />
                           </Col>
@@ -1043,7 +1124,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="cc3"
-                              placeholder="12345678"
+                              
                               required
                             />
                           </Col>
@@ -1062,7 +1143,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="nr3"
-                              placeholder="912345678"
+                              
                               required={
                                 pagamento3 === "MBway" &&
                                 dividePagamento3 == true
@@ -1194,14 +1275,28 @@ const CriarReservas = () => {
                           <Label for="email4" sm={2}>
                             Email
                           </Label>
-                          <Col sm={10}>
+                          <Col sm={8}>
                             <Input
+                            onChange={() => {
+                              setColorBTN4("secondary")
+                            }}
                               type="email"
                               name="email"
                               id="email4"
-                              placeholder="example@email.pt"
                               required
                             />
+                          </Col>
+                          <Col  sm={2} >
+                          <Button  id="ckeckButton4" color={colorBTN4} onClick={async() => {
+                            var check = await emailCheck(document.getElementById("email4").value,"nome4","cc4" )
+                            if(check) {
+                              setColorBTN4("primary")
+                            } else {
+                              setColorBTN4("secondary")
+                            }
+                          }} >
+                            <Check></Check>
+                          </Button>
                           </Col>
                         </FormGroup>
                         <FormGroup style={{ paddingBottom: "10px" }} row>
@@ -1213,7 +1308,7 @@ const CriarReservas = () => {
                               type="text"
                               name="email"
                               id="nome4"
-                              placeholder="Primeiro Ultimo"
+                              
                               required
                             />
                           </Col>
@@ -1227,7 +1322,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="cc4"
-                              placeholder="12345678"
+                              
                               required
                             />
                           </Col>
@@ -1246,7 +1341,7 @@ const CriarReservas = () => {
                               type="number"
                               name="email"
                               id="nr4"
-                              placeholder="912345678"
+                              
                               required={
                                 pagamento4 === "MBway" &&
                                 dividePagamento4 == true

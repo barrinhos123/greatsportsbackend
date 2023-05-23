@@ -47,6 +47,14 @@ export async function pesquisarJogadoresByEmailParaEntidades(emails) {
   return map
 }
 
+export async function criarUtilizador(email,password,nome,dataDN,cc) {
+  try {
+    var user = await firebase.auth().createUserWithEmailAndPassword(email,password)
+  } catch (error) {
+    
+  }
+}
+
 export async function adicionarValorAoBancoDeHoras(pagamentoNumerario) {
   try {
     var pagamentoNum = new PagamentoNumerario()

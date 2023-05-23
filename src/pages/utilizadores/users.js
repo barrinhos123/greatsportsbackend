@@ -19,6 +19,7 @@ function ProcurarUtilzadoresScreen() {
   const [nome, setNome] = useState(null)
   const [dataDeNa, setDataDeNa] = useState(null)
   const [seguro, setSeguro] = useState(null)
+  const [nif, setNif] = useState(null)
   const [bancoDeHoras, setBancoDeHoras] = useState(null)
   const [contrato, setContrato] = useState(null)
   const [historicoDeContratos, setHistoricoDecontratos] = useState([])
@@ -97,6 +98,8 @@ function ProcurarUtilzadoresScreen() {
     setEmail(userAux.email)
     setNome(userAux.primeiroNome + " " + userAux.ultimoNome)
     setNumeroCC(userAux.numeroDoCC)
+    setNif(userAux.nif)
+    
     
     setDataDeNa(userAux.dataDeNascimento.toDate().toDateString())
     if(userAux.seguro != null && typeof userAux.seguro != "undefined"){
@@ -258,6 +261,10 @@ function ProcurarUtilzadoresScreen() {
                 <Label for="emailValue">Número CC</Label>
                 <p>{numeroCC}</p>
               </Col>
+              <Col md={4}>
+              <Label for="emailValue">NIF</Label>
+                <p>{nif}</p>
+                </Col>
             </Row>
             {/*  <Row style={{ paddingTop: "40px" }}>
               <h4>Histórico de Contratos</h4>

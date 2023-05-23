@@ -31,10 +31,12 @@ function AulasScreen() {
         .collection(aulasCollection)
         .where("localizacao", "==", localizacao)
         .onSnapshot(docsSnap => {
+          console.log("Fetching aulasd");
           var listaDeAulasAux = []
           for (const element of docsSnap.docs) {
             listaDeAulasAux.push(element)
           }
+          console.log(listaDeAulasAux);
           setListaDeAulas(listaDeAulasAux)
         })
     } catch (e) {
@@ -61,16 +63,19 @@ function AulasScreen() {
             </Row>
           </div>
           <Row style={{ marginBottom: "10px" }}>
-            <Col className="list-title" md={2}>
+            <Col className="list-title" md={1}>
               Dia
             </Col>
             <Col className="list-title" md={2}>
-              Início
+              Horário
             </Col>
-            <Col className="list-title" md={2}>
-              Nr de Alunos
+            <Col className="list-title" md={1}>
+              Nr.A
             </Col>
-            <Col className="list-title" md={2}>
+            <Col className="list-title" md={1}>
+              Nível
+            </Col>
+            <Col className="list-title" md={3}>
               Professor
             </Col>
             <Col className="list-title" md={2}>
@@ -85,14 +90,15 @@ function AulasScreen() {
                 key={index}
                 className={index % 2 == 0 ? "myList-even" : "myList-odd"}
               >
-                <Col md={2}>
+                <Col md={1}>
                   <p>{weekday[aula.weekDay]}</p>
                 </Col>
                 <Col md={2}>
-                  <p>{aula.horaInicial}</p>
+                  <p>{aula.horaInicial + "-" + aula.horaFinal}</p>
                 </Col>
-                <Col md={2}>{aula.alunos.length}</Col>
-                <Col md={2}>
+                <Col md={1}>{aula.alunos.length}</Col>
+                <Col md={1}>{aula.nivel}</Col>
+                <Col md={3}>
                   <p>{aula.professor}</p>
                 </Col>
                 <Col md={2}>

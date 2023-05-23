@@ -149,6 +149,11 @@ const SidebarContent = props => {
                     </Link>
                   </li>
                   <li>
+                    <Link to="/registarUtilizadores">
+                      {props.t("Registar Jogador")}
+                    </Link>
+                  </li>
+                  <li>
                     <Link to="/adicionarBancoDeHoras">
                       {props.t("Adicionar Banco de Horas")}
                     </Link>

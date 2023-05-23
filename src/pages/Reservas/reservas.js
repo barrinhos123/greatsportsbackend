@@ -9,6 +9,7 @@ import { Link } from "react-router-dom"
 const Reservas = () => {
   const { t, i18n } = useTranslation()
   const [listaDeReservas, setListaDeReservas] = useState([])
+  const [listaDeReservasFiltrada, setListaDeReservasFiltrada] = useState([])
 
   async function getReservas(localizacao) {
     var horaIncial = new Date()
@@ -31,6 +32,7 @@ const Reservas = () => {
           for (const element of docsSnaps.docs) {
             listaAux.push(element)
           }
+          setListaDeReservasFiltrada(listaAux)
           setListaDeReservas(listaAux)
         })
       return true
@@ -38,6 +40,15 @@ const Reservas = () => {
       console.error(error)
       return null
     }
+  }
+
+  function filtraReservas(filtro) {
+    var asd = listaDeReservas.filter(elem => elem.data().estado == filtro)
+    setListaDeReservasFiltrada(asd);
+  }
+
+  function resetAoFiltro() {
+    setListaDeReservasFiltrada(listaDeReservas)
   }
 
   useEffect(() => {
@@ -53,6 +64,25 @@ const Reservas = () => {
               <Col md={8}>
                 <h6 className="page-title">{t("Reservas")}</h6>
               </Col>
+            </Row>
+            
+            <Row>
+              <Col md={2}>
+              <Button color="primary" onClick={() => {
+                  filtraReservas('Confirmada')
+              }}
+              >Confirmadas</Button></Col>
+               <Col md={2}>
+              <Button color="primary" onClick={() => {
+                  resetAoFiltro()
+              }}
+              >Todas</Button></Col>
+            </Row>
+            <Row style={{paddingTop: "20px"}}>
+              <Col><h5>Jogador</h5></Col>
+            </Row>
+            <Row style={{paddingTop: "20px"}}>
+              <Col><h5>Email</h5></Col>
             </Row>
             <Row style={{ paddingTop: "20px" }}>
               <Col className="list-title" md={3}>
@@ -72,7 +102,7 @@ const Reservas = () => {
               </Col>
             </Row>
 
-            {listaDeReservas.map((reservaSnap, index) => {
+            {listaDeReservasFiltrada.map((reservaSnap, index) => {
               const reserva = reservaSnap.data()
               var date = new Date()
               date = reserva.horaIncial.toDate()

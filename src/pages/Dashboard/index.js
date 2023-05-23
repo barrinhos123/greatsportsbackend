@@ -17,7 +17,7 @@ function Dashboard() {
             <Row className="align-items-center">
               <Col md={8}>
                 <h6 className="page-title">{t("Dashboard")}</h6>
-
+                 
                 {/* <ol className="breadcrumb m-0">
                   <li className="breadcrumb-item active">
                     {t("Adicionar nova Reserva")}

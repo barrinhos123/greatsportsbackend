@@ -1,25 +1,12 @@
-import React, { useEffect, useState } from "react"
-import { Check, DashCircle, PlusCircle } from "react-bootstrap-icons"
-import {
-  Button,
-  Col,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Row,
-} from "reactstrap"
-import { adicinarAlunosAAula, adicionarAlunoEData } from "services/aulas/aulas_services"
-import { checkIfUserExists } from "services/reservas/reservas_services"
+import React, { useState } from "react"
+import { Check, Trash2 } from "react-bootstrap-icons"
+import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap"
+import firebase from "firebase/app"
+import "firebase/firestore"
 
-function AdicionarAlunos(props) {
-  const [isOpen, setIsOpen] = useState(false)
-  
-  const [email, setEmail] = useState('')
+function InfoAlunosModal(props) {
+ 
+    const [email, setEmail] = useState('')
   const [tel, setTel] = useState('')
   const [cc, setCC] = useState('')
   const [nome, setNome] = useState('')
@@ -56,17 +43,16 @@ function AdicionarAlunos(props) {
     }
   }
 
-  console.log('Patig')
-
+  const [isOpen, setIsOpen] = useState(false)
   return (
     <React.Fragment>
       <Button
+        color="primary"
         onClick={() => {
           setIsOpen(!isOpen)
         }}
-        color="transparent"
       >
-        <PlusCircle></PlusCircle>
+        Info
       </Button>
       <Modal
         isOpen={isOpen}
@@ -79,7 +65,7 @@ function AdicionarAlunos(props) {
             setIsOpen(!isOpen)
           }}
         >
-          Adicionar Jogador
+          {props.titulo}
         </ModalHeader>
         <ModalBody>
           <Form style={{ paddingBottom: "20px" }}>
@@ -168,6 +154,21 @@ function AdicionarAlunos(props) {
          
         </ModalBody>
         <ModalFooter>
+          <Button color="primary"
+            onClick={async () => {
+              var res = await remove(props.collection, props.docID)
+              if(res) {
+                alert('Aula Removida Com sucesso')
+                setIsOpen(!isOpen)
+              } else {
+                alert('Erro a remover a aula')
+                setIsOpen(!isOpen)
+              }
+              
+            }}
+          >
+            Remover Aluno
+          </Button>
           <Button
             onClick={async() => {
               
@@ -188,19 +189,21 @@ function AdicionarAlunos(props) {
             }}
             color="primary"
           >
-            Adicionar
+            Editar Dados
           </Button>
-          <Button
-            onClick={() => {
-              setIsOpen(!isOpen)
+          <Button color="primary"
+            onClick={async () => {
+             
+              
             }}
           >
-            Cancelar
+            Enviar QRCode
           </Button>
+          <Button onClick={() => setIsOpen(!isOpen)}>Voltar</Button>
         </ModalFooter>
       </Modal>
     </React.Fragment>
   )
 }
 
-export default AdicionarAlunos
+export default InfoAlunosModal

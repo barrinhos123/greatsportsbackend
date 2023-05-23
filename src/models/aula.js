@@ -8,11 +8,14 @@ export class Aula {
     professor,
     alunos,
     alunosPAX,
+    alunosData,
     nivel,
     estado,
     nome,
     campos,
-    weekDay
+    weekDay,
+    tipo,
+
   ) {
     this.createdAt = new Date()
     this.weekDay = weekDay
@@ -23,11 +26,13 @@ export class Aula {
     this.diaFinal = diaFinal
     this.professor = professor
     this.alunos = alunos
+    this.alunosData= alunosData
     this.alunosPAX = alunosPAX
     this.nivel = nivel
     this.estado = estado
     this.nome = nome
     this.campos = campos
+    this.tipo = tipo
   }
 
   toJSON() {
@@ -41,11 +46,14 @@ export class Aula {
       diaFinal: this.diaFinal,
       professor: this.professor,
       alunos: this.alunos,
+      alunosData: this.alunosData,
       alunosPAX: this.alunosPAX,
       nivel: this.nivel,
       estado: this.estado,
       nome: this.nome,
       campos: this.campos,
+      tip: this.tipo,
+     
     }
   }
 
@@ -58,11 +66,13 @@ export class Aula {
       new Date(json.diaFinal),
       json.professor,
       json.alunos,
+      json.alunosData,
       json.alunosPAX,
       json.nivel,
       json.estado,
       json.nome,
-      json.campos
+      json.campos,
+      json.tipo,
     )
     aula.createdAt = new Date(json.createdAt)
     aula.weekDay = json.weekDay

@@ -24,9 +24,14 @@ import { Aula } from "models/aula"
 import { createAula, updateAula } from "services/aulas/aulas_services"
 import AdicionarAlunos from "./adicionar_alunos_modal"
 import AdicionarAlunosPAX from "./editar_alunos_PAX"
+import { useSelector } from "react-redux"
+import { selecttreinadores } from "store/treinadores/treinadores_reducer"
+import { niveis } from "services/consts"
+import InfoAlunosModal from "./info_alunos_modal"
 
 function EditarAulasModal(props) {
   const [isOpen, setIsOpen] = useState(false)
+  var treinadores = useSelector(selecttreinadores)
   const [nomeDaAula, setNomeDaAula] = useState(props.aula.nome)
   const [horaInicial, setHoraInicial] = useState(props.aula.horaInicial)
   const [horaFinal, setHoraFinal] = useState(props.aula.horaFinal)
@@ -36,8 +41,12 @@ function EditarAulasModal(props) {
   const [nivel, setNivel] = useState(props.aula.nivel)
   const [professor, setProfessor] = useState(props.aula.professor)
   const [isLoading, setIsLoading] = useState(false)
+  const [diaDaSemana, setDiaDaSemana] = useState(props.aula.weekDay)
+
+  const [tipoDeAula, setTipoDeAula] = useState(props.aula.tipo)
 
   const [alunos, setAlunos] = useState(props.aula.alunos)
+  const [alunosData, setAlunosData] = useState(props.aula.alunosData)
   const [alunosPax, setAlunosPax] = useState(props.aula.alunosPAX)
 
   const [camposDisp, setCamposDisp] = useState([])
@@ -112,26 +121,30 @@ function EditarAulasModal(props) {
                 </Col>
               </Row>
             </FormGroup>
+           
             <FormGroup>
-            <Row>
-                <Col md={3}>
-                  <p> Duração </p>
-                </Col>
-                <Col md={9}>
-                <Input onChange={() => {
-                      console.log(document.getElementById("selectTime").value)
-                    }} type="select" name="select" id="selectTime">
-                      <option>60</option>
-                      <option>90</option>
-                      <option>120</option>
-                    </Input>
-                </Col>
+              <Row>
+                  <Col md={3}>
+                    <p> Tipo </p>
+                  </Col>
+                  <Col md={9}>
+                  <Input 
+                  value={tipoDeAula}
+                  onChange={(e) => {
+                    setTipoDeAula(e.target.value)
+                        console.log(document.getElementById("tipoAula").value)
+                      }} type="select" name="select" id="tipoAula">
+                        <option>Experimental</option>
+                        <option>Academia</option>
+                        <option>PAX</option>
+                      </Input>
+                  </Col>
               </Row>
             </FormGroup>
             <FormGroup>
               <Row>
                 <Col md={3}>
-                  <p>Hora Inical</p>
+                  <p>Hora Inicial</p>
                 </Col>
                 <Col md={9}>
                   <TimePicker
@@ -187,7 +200,9 @@ function EditarAulasModal(props) {
                 </Col>
                 <Col md={9}>
                   <Input
-                    onChange={() => {
+                   value={weekday[diaDaSemana]} 
+                    onChange={(e) => {
+                      setDiaDaSemana(document.getElementById("weekdaySelect").selectedIndex)
                       console.log(
                         document.getElementById("weekdaySelect").selectedIndex
                       )
@@ -209,7 +224,7 @@ function EditarAulasModal(props) {
               </Col>
               <Col md={9}>
                 <FormGroup>
-                  <Input type="select" name="select" id="localSelect">
+                <Input type="select" name="select" id="localSelect">
                     <option>Great Padel Vila Verde</option>
                   </Input>
                 </FormGroup>
@@ -221,16 +236,11 @@ function EditarAulasModal(props) {
                   <p>Professor</p>
                 </Col>
                 <Col md={9}>
-                  <Input
-                    value={professor}
-                    onChange={e => {
-                      setProfessor(e.target.value)
-                    }}
-                    type="email"
-                    name="email"
-                    id="professorInput"
-                    placeholder="Professor"
-                  />
+                  <Input onChange={(e) => {setProfessor(e.target.value)}} value={professor} type="select" name="select" id="professorInput">
+                    {treinadores.map((elem,index) => {
+                      return <option key={index}>{elem.nome}</option>
+                    })}
+                  </Input>
                 </Col>
               </Row>
             </FormGroup>
@@ -249,7 +259,9 @@ function EditarAulasModal(props) {
                     name="select"
                     id="nivelSelect"
                   >
-                    <option>1</option>
+                    {niveis.map((elem,index) => {
+                      return <option key={index}>{elem}</option>
+                    })}
                   </Input>
                 </Col>
               </Row>
@@ -266,31 +278,22 @@ function EditarAulasModal(props) {
                   <p>Nenhum aluno inscrito</p>
                 ) : (
                   alunos.map((aluno, index) => {
-                    return <p>{aluno}</p>
+                    return <Row style={{padding: "10px"}} key={index}>
+                       <Col md={2}>
+                       <InfoAlunosModal></InfoAlunosModal>
+                      </Col>
+                      <Col md={10}>
+                        {aluno}
+                      </Col>
+                     
+                    </Row>
                   })
                 )}
               </Col>
             </FormGroup>
+            
             <FormGroup>
-              <Row>
-                <Col>
-                  Alunos PAX 
-                  <AdicionarAlunosPAX aulaId={props.aulaId} alunos={props.aula.alunosPAX}></AdicionarAlunosPAX>
-                
-                </Col>
-              </Row>
-              <Col>
-                {alunosPax.length == 0 ? (
-                  <p>Nenhum aluno PAX</p>
-                ) : (
-                  alunosPax.map((aluno, index) => {
-                    return <p>{aluno}</p>
-                  })
-                )}
-              </Col>
-            </FormGroup>
-            <FormGroup>
-              <p>Campos</p>
+              <p style={{paddingTop: "20px"}}>Campos</p>
               <Row>
                 {camposDisp.map((value, index) => {
                   return (
@@ -336,17 +339,19 @@ function EditarAulasModal(props) {
               newAula.estado = 1
               newAula.nome = document.getElementById("aulaInput").value
               newAula.alunos = []
+              newAula.alunosData = {}
               newAula.campos = campoEscolhido
               newAula.diaFinal = endDate
               newAula.diaInicial = startDate
               newAula.horaInicial = horaInicial
               newAula.horaFinal = horaFinal
+              newAula.tipo = document.getElementById("tipoAula").value
               newAula.localizacao = document.getElementById("localSelect").value
               newAula.professor =
                 document.getElementById("professorInput").value
               newAula.weekDay =
                 document.getElementById("weekdaySelect").selectedIndex
-              newAula.nivel = document.getElementById("nivelSelect").value
+              newAula.nivel = nivel
               console.log(newAula)
               /*  setIsOpen(!isOpen) */
               var aux = await updateAula(newAula, props.aulaId)

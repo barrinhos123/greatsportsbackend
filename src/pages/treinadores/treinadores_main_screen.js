@@ -9,37 +9,15 @@ import firebase from "firebase/app"
 import "firebase/firestore"
 import { treinadoresCollection } from "services/consts"
 import { element } from "prop-types"
+import { Trash, Trash2 } from "react-bootstrap-icons"
+import RemoveTreinadoresModal from "components/modals/remove_treinadores.modal"
+import { useSelector } from "react-redux"
+import { selecttreinadores } from "store/treinadores/treinadores_reducer"
 
 function TreinadoresMainScreen() {
   const { t, i18n } = useTranslation()
-  const [treinadores, setTreindadores] = useState([])
+  var treinadoresRed = useSelector(selecttreinadores)
 
-  async function getTreinadores(localizacao) {
-    var listaAux = []
-    try {
-      firebase
-        .firestore()
-        .collection(treinadoresCollection)
-        .where("localizacao", "==", localizacao)
-        .onSnapshot(value => {
-          listaAux = []
-          setTreindadores([])
-          value.docs.forEach(element => {
-            console.log("element")
-            console.log(element)
-            listaAux.push(element.data())
-          })
-          setTreindadores(listaAux)
-        })
-    } catch (error) {
-      console.error(error)
-      return null
-    }
-  }
-
-  useEffect(() => {
-    getTreinadores("Great Padel Vila Verde")
-  }, [])
 
   return (
     <React.Fragment>
@@ -63,8 +41,8 @@ function TreinadoresMainScreen() {
               <h4>Email</h4>
             </Col>
           </Row>
-          {treinadores.map((elemnt, index) => {
-            console.log(element)
+          {treinadoresRed.map((elemnt, index) => {
+            
             const treinadorData = elemnt
             return (
               <Row
@@ -73,6 +51,7 @@ function TreinadoresMainScreen() {
               >
                 <Col md={5}>{treinadorData.nome}</Col>
                 <Col md={5}>{treinadorData.email}</Col>
+                <Col md={2}> <RemoveTreinadoresModal email={treinadorData.email}></RemoveTreinadoresModal> </Col>
               </Row>
             )
           })}

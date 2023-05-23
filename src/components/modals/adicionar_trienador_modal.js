@@ -17,10 +17,26 @@ import firebase from "firebase/app"
 import "firebase/firestore"
 import { useSelector } from "react-redux"
 import { selectclubeid } from "store/localizacao/clube_id_reducer"
+import { selecttreinadores } from "store/treinadores/treinadores_reducer"
 
 function AdicinoarTreinadorMolda() {
   const [isOpen, setIsOpen] = useState(false)
   const localId = useSelector(selectclubeid)
+
+  var clubeId = useSelector(selectclubeid)
+  var treinadoresRed = useSelector(selecttreinadores)
+  
+ async function updateTreinadores(novosTreinadores) {
+  try {
+      await firebase.firestore().collection("localizacao").doc(clubeId).set({
+          treinadores: novosTreinadores
+      }, {merge: true})
+      return true
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+ } 
 
   return (
     <React.Fragment>
@@ -77,26 +93,18 @@ function AdicinoarTreinadorMolda() {
         </ModalBody>
         <ModalFooter>
           <Button
-            onClick={async () => {
-              var newTreinador = new Treinador()
-              newTreinador.createdAt = firebase.firestore.Timestamp.fromDate(
-                new Date()
-              )
-              newTreinador.qrCode = null
-              newTreinador.aulas = {}
-              newTreinador.nome = document.getElementById("nomeInput").value
-              newTreinador.email = document.getElementById("emailInput").value
-              newTreinador.localizacao = "Great Padel Vila Verde"
-
-              criarTreinador(newTreinador, localId).then(value => {
-                if (value == true) {
-                  alert("Treinador adicionado com sucesso")
+             onClick={async () => {
+              var listaAUx = [...treinadoresRed]
+              listaAUx.push({nome:document.getElementById("nomeInput").value ,email:document.getElementById("emailInput").value })
+              var res = await updateTreinadores(listaAUx)
+              if(res) {
+                  alert('Treinador Removido com sucesso')
                   setIsOpen(!isOpen)
-                } else {
-                  alert("Falha a adicionar treinador")
-                }
-              })
-            }}
+              } else {
+                  alert('Falha a Remover treinador')
+                  setIsOpen(!isOpen)
+              }
+              }}
             color="primary"
           >
             Adicionar treinador
