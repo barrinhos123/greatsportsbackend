@@ -115,3 +115,30 @@ async function enviarEmail(to, message, assunto, image) {
     return null
   }
 }
+
+export async function enviarEmaiParaTodos(tos, message, assunto,attachment ) {
+  for (let index = 0; index < tos.length; index++) {
+    console.log("A Enviar email para " +tos[index])
+  try {
+
+    await firebase
+      .firestore()
+      .collection("mail")
+      .add({
+        to: tos[index],
+        message: {
+          subject: assunto,
+          html: message,
+          attachments: [
+            {
+              path: attachment,
+            },
+          ],
+        },
+      })
+  } catch (e) {
+    console.log(e)
+    return null
+  }
+}
+}

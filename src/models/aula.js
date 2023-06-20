@@ -15,7 +15,8 @@ export class Aula {
     campos,
     weekDay,
     tipo,
-
+    notas,
+    isAtiva,
   ) {
     this.createdAt = new Date()
     this.weekDay = weekDay
@@ -33,6 +34,8 @@ export class Aula {
     this.nome = nome
     this.campos = campos
     this.tipo = tipo
+    this.notas = notas
+    this.isAtiva = isAtiva
   }
 
   toJSON() {
@@ -53,6 +56,8 @@ export class Aula {
       nome: this.nome,
       campos: this.campos,
       tip: this.tipo,
+      notas: this.notas,
+      isAtiva: this.isAtiva
      
     }
   }
@@ -73,6 +78,8 @@ export class Aula {
       json.nome,
       json.campos,
       json.tipo,
+      json.notas,
+      json.isAtiva,
     )
     aula.createdAt = new Date(json.createdAt)
     aula.weekDay = json.weekDay

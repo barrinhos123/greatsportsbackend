@@ -16,8 +16,12 @@ import classes_reducer from "./localizacao/classes_reducer"
 import clube_id_reducer from "./localizacao/clube_id_reducer"
 import localizacao_reducer from "./localizacao/localizacao_reducer"
 import treinadores_reducer from "./treinadores/treinadores_reducer"
+import feriados_reducer from "./descontos/feriados"
+import bloquear_reservas_reducer from "./bloquear_reservas/bloquear_reservas_reducer"
 
 const rootReducer = combineReducers({
+  bloquearReservas: bloquear_reservas_reducer,
+  feriados: feriados_reducer,
   treinadores: treinadores_reducer,
   descontos: descontos_reducer,
   classes: classes_reducer,

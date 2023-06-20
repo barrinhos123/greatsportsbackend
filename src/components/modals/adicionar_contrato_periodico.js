@@ -296,7 +296,7 @@ function AdicionarContratosPeriodicoModal() {
                           }
                         }}
                       >
-                        {value}
+                        { removeCamposEsc[value] }
                       </Button>
                     </Col>
                   )

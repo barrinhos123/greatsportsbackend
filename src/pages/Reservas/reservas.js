@@ -5,6 +5,7 @@ import firebase from "firebase/app"
 import "firebase/firestore"
 import { ArrowRightCircle } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
+import { convertCamps } from "services/consts"
 
 const Reservas = () => {
   const { t, i18n } = useTranslation()
@@ -88,13 +89,20 @@ const Reservas = () => {
               <Col className="list-title" md={3}>
                 <h4>Reservada por</h4>
               </Col>
-              <Col className="list-title" md={3}>
+              <Col className="list-title" md={2}>
                 <h4> Dia</h4>
               </Col>
+             
               <Col className="list-title" md={2}>
                 <h4> Início</h4>
               </Col>
-              <Col className="list-title" md={2}>
+              <Col className="list-title" md={1}>
+                <h4> Duração</h4>
+              </Col>
+              <Col className="list-title" md={1}>
+                <h4> Campo</h4>
+              </Col>
+              <Col className="list-title" md={1}>
                 <h4> Estado</h4>
               </Col>
               <Col className="list-title" md={1}>
@@ -120,13 +128,20 @@ const Reservas = () => {
                   <Col md={3}>
                     <p>{reserva.jogador1estado.email}</p>
                   </Col>
-                  <Col md={3}>
+                  <Col md={2}>
                     <p>{date.toDateString()}</p>
                   </Col>
+                  
                   <Col md={2}>
                     <p>{horas + " : " + minutos}</p>
                   </Col>
-                  <Col md={2}>
+                  <Col md={1}>
+                    <p>{reserva.duracao + ""}</p>
+                  </Col>
+                  <Col  md={1}>
+                   <p>{convertCamps[reserva.campo]}</p>
+                  </Col>
+                  <Col md={1}>
                     {reserva.estado == "Anulada" ? (
                       <p style={{ color: "red" }}>{reserva.estado}</p>
                     ) : reserva.estado == "Pendente" ? (

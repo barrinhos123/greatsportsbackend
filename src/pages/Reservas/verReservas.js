@@ -16,6 +16,7 @@ import QRCode from "qrcode"
 import { enviaEmailParaUmJogador } from "services/email/email_services"
 import moment from "moment"
 import EditarReservasModal from "components/modals/editar_reservas_modal"
+import { convertCamps } from "services/consts"
 
 function VerReservasScreen() {
   let { id } = useParams()
@@ -129,7 +130,7 @@ function VerReservasScreen() {
                   <span style={{ fontSize: "16px", fontWeight: "bold" }}>
                     Campo:{" "}
                   </span>
-                  {reserva.campo}
+                  {convertCamps[reserva.campo]}
                 </Col>
                 <Col>
                   <span style={{ fontSize: "16px", fontWeight: "bold" }}>
@@ -175,6 +176,10 @@ function VerReservasScreen() {
                       <p>
                         <span style={{ fontWeight: "bold" }}>CC:</span>{" "}
                         {reserva.jogador1estado.cc}
+                      </p>
+                      <p>
+                        <span style={{ fontWeight: "bold" }}>Pagamento:</span>{" "}
+                        {reserva.jogador1estado.tipo}
                       </p>
                       <p>
                         <span style={{ fontWeight: "bold" }}>QrCode:</span>{" "}
@@ -223,6 +228,10 @@ function VerReservasScreen() {
                         {reserva.jogador2estado.cc}
                       </p>
                       <p>
+                        <span style={{ fontWeight: "bold" }}>Pagamento:</span>{" "}
+                        {reserva.jogador2estado.tipo}
+                      </p>
+                      <p>
                         <span style={{ fontWeight: "bold" }}>QrCode:</span>{" "}
                         {reserva.jogador2estado.qrcode}
                       </p>
@@ -269,6 +278,10 @@ function VerReservasScreen() {
                         {reserva.jogador3estado.cc}
                       </p>
                       <p>
+                        <span style={{ fontWeight: "bold" }}>Pagamento:</span>{" "}
+                        {reserva.jogador3estado.tipo}
+                      </p>
+                      <p>
                         <span style={{ fontWeight: "bold" }}>QrCode:</span>{" "}
                         {reserva.jogador3estado.qrcode}
                       </p>
@@ -313,6 +326,10 @@ function VerReservasScreen() {
                       <p>
                         <span style={{ fontWeight: "bold" }}>CC:</span>{" "}
                         {reserva.jogador4estado.cc}
+                      </p>
+                      <p>
+                        <span style={{ fontWeight: "bold" }}>Pagamento:</span>{" "}
+                        {reserva.jogador4estado.tipo}
                       </p>
                       <p>
                         <span style={{ fontWeight: "bold" }}>QrCode:</span>{" "}

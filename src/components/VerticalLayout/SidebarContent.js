@@ -102,13 +102,32 @@ const SidebarContent = props => {
                 <span>{props.t("Dashboard")}</span>
               </Link>
             </li>
+            
             <li>
-              <Link to="/descontos" className=" waves-effect">
-                <i className="ti-money"></i>
-                <span>{props.t("Descontos")}</span>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-folder"></i>
+                <span>{props.t("Clube")}</span>
               </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/descontos">
+                    {props.t("Descontos")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/feriados">
+                    {props.t("Feriados")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/moloni">
+                    {props.t("Moloni")}
+                  </Link>
+                </li>
+               
+              </ul>
             </li>
-
+            
             <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-folder"></i>
@@ -127,6 +146,9 @@ const SidebarContent = props => {
                 </li>
                 <li>
                   <Link to="/reservas">{props.t("Próximas Reservas")} </Link>
+                </li>
+                <li>
+                  <Link to="/desativarCampos">{props.t("Desativar Reservas")} </Link>
                 </li>
               </ul>
             </li>
@@ -149,13 +171,23 @@ const SidebarContent = props => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/registarUtilizadores">
-                      {props.t("Registar Jogador")}
-                    </Link>
+                  <a href="https://webapp.greatpadel.pt/" target="_blank" rel="noreferrer">
+                    Registar Jogador
+                  </a>{" "}
                   </li>
                   <li>
                     <Link to="/adicionarBancoDeHoras">
                       {props.t("Adicionar Banco de Horas")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/dadosDoRequestID">
+                      {props.t("Dados do Request ID")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/jsonToExcelJogadores">
+                      {props.t("Enviar email")}
                     </Link>
                   </li>
                 </ul>

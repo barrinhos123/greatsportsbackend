@@ -37,6 +37,8 @@ import { setlocalizacao } from "store/localizacao/localizacao_reducer"
 import { setclasses } from "store/localizacao/classes_reducer"
 import { setclubeid } from "store/localizacao/clube_id_reducer"
 import { settreinadores } from "store/treinadores/treinadores_reducer"
+import { setferiados } from "store/descontos/feriados"
+import { setbloquearReservas } from "store/bloquear_reservas/bloquear_reservas_reducer"
 
 // Activating fake backend
 //fakeBackend()
@@ -86,17 +88,21 @@ const App = props => {
             .where("localizacao", "==", localizacao)
             .limit(1)
             .onSnapshot(values => {
+              var bloquear = values.docs.at(0).data().horariosBloqueados
               var descontos = values.docs.at(0).data().descontos
               var classes = values.docs.at(0).data().classes
               var clubeid = values.docs.at(0).id
               var treinadores = values.docs.at(0).data().treinadores
               var localizacao = values.docs.at(0).data().localizacao
+              var feriados = values.docs.at(0).data().feriados
               console.log("Valores do local: ", descontos)
+              dispatch(setbloquearReservas(bloquear))
               dispatch(setdescontos(descontos))
               dispatch(setclasses(classes))
               dispatch(setclubeid(clubeid))
               dispatch(settreinadores(treinadores))
               dispatch(setlocalizacao(localizacao))
+              dispatch(setferiados(feriados))
             })
         })
       } catch (error) {

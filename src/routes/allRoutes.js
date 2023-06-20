@@ -22,7 +22,11 @@ import TreinadoresMainScreen from "pages/treinadores/treinadores_main_screen"
 import CriarReservasSemRegistoScreen from "pages/Reservas/criar_reservas_sem_registo"
 import AdicioanarBancoDeHoras from "pages/utilizadores/adicionar_banco_de_horas"
 import ContratosPeriodicos from "pages/contratos/contratos_periodicos"
-import RegistarJogador from "pages/utilizadores/registar_jogador"
+import DadosDoRequestID from "pages/utilizadores/dados_request_id"
+import JogadoresToExcel from "pages/utilizadores/jogadores_to_excel"
+import Feriados from "pages/descontos/feriados"
+import MoloniPage from "pages/utilizadores/moloni"
+import DesativarHoras from "pages/Reservas/desativar_horas"
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -31,10 +35,14 @@ const userRoutes = [
   { path: "/descontos", component: Descontos },
   { path: "/aulas", component: AulasScreen },
   { path: "/procurarUtilizadores", component: ProcurarUtilzadoresScreen },
-  { path: "/registarUtilizadores", component: RegistarJogador },
+  { path: "/dadosDoRequestID", component: DadosDoRequestID },
   { path: "/contratos", component: ContratosScree },
   { path: "/contratosPeriodicos", component: ContratosPeriodicos },
   { path: "/adicionarReservas", component: CriarReservas },
+  { path: "/jsonToExcelJogadores", component: JogadoresToExcel },
+  { path: "/feriados", component: Feriados },
+  { path: "/moloni", component: MoloniPage  },
+  { path: "/desativarCampos", component: DesativarHoras  },
   {
     path: "/adicionarReservasSemRegisto",
     component: CriarReservasSemRegistoScreen,

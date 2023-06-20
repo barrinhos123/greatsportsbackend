@@ -50,7 +50,8 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
   )
   console.log("PATIG0")
   console.log(procuraReserva.localizacao)
-  console.log(horaInicial), console.log(horaFinal)
+  console.log("Hora incial da Reserva: " + horaInicial), 
+  console.log("Hora final da Reserva: " + horaFinal)
   try {
     await firebase
       .firestore()
@@ -75,7 +76,7 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
           var hf = element.data().horaFinal
           var rhi = firebase.firestore.Timestamp.fromDate(horaInicial)
           var rhf = firebase.firestore.Timestamp.fromDate(horaFinal)
-          console.log("patig")
+         /*  console.log("patig")
           console.log(hi.toDate())
           console.log(hf.toDate())
           console.log(rhi.toDate())
@@ -84,7 +85,7 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
           console.log(hi <= rhi && hf <= rhf && rhi < hf)
           console.log(hi >= rhi && hi < rhf)
           console.log(hf > rhi && hf <= rhf)
-          console.log(hi <= rhi  && hf >= rhf)
+          console.log(hi <= rhi  && hf >= rhf) */
           if (element.data().estado != 'Anulada') {
             if (hi >= rhi && hf > rhf && rhf > hi) {
               listaDeCamposIndisponiveis.push(element.data().campo)
@@ -118,11 +119,16 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
 
     //Coverter o horario da Reserva para um tempo compativel com o das aulas. Formato-> 00:00
     var horaIncialComp = ("0" + horaInicial.getHours()).slice(-2)
+    horaIncialComp = ( "0" + ( parseInt(horaIncialComp) - 2).toString()).slice(-2)
     var minutosInicialComp = ("0" + horaInicial.getMinutes()).slice(-2)
     var horaFinalComp = ("0" + horaFinal.getHours()).slice(-2)
     var minutosFinalComp = ("0" + horaFinal.getMinutes()).slice(-2)
     var horaInicialFormat1 = horaIncialComp + ":" + minutosInicialComp
     var horaInicialFormat2 = horaFinalComp + ":" + minutosFinalComp
+
+    console.log("Hora incial Formatada: " +  horaInicialFormat1)
+    console.log("Hora final Formatada: " + horaInicialFormat2)
+      
 
     await firebase
       .firestore()
@@ -133,9 +139,10 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
       .where("horaInicial", "<=", horaInicialFormat2)
       .get()
       .then(value => {
-        if (value.docs.length != 0) {
-          console.log("Resultado das aulas ")
+        console.log("Resultado das aulas ")
           console.log(value.docs.length)
+        if (value.docs.length != 0) {
+          
           for (var elementa of value.docs) {
             if (elementa.data().estado != "Anulada") {
               var aulasHi = elementa.data().horaInicial
@@ -151,12 +158,14 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
               var aulasRhi = horaIncialAula + ":" + minutosInicialAula
               var aulasRhf = horaFinalAula + ":" + minutosFinalAula
 
-              console.log(aulasRhi)
-              console.log(aulasRhf)
-              console.log(aulasHi)
-              console.log(aulasHf)
+              console.log("casos de teste: ");
+              console.log(aulasHi >= aulasRhi && aulasHf > aulasRhf && aulasRhf > aulasHi)
+              console.log(aulasHi <= aulasRhi && aulasHf <= aulasRhf && aulasRhi < aulasHf)
+              console.log(aulasHi >= aulasRhi && aulasHi < aulasRhf)
+              console.log(aulasHf > aulasRhi && aulasHf <= aulasRhf)
+              console.log(aulasHi <= aulasRhi  && aulasHf >= aulasRhf)  
 
-              if (aulasRhi <= aulasHi && aulasHi < aulasRhf) {
+              if (aulasHi >= aulasRhi && aulasHf > aulasRhf && aulasRhf > aulasHi) {
                 for (
                   let index = 0;
                   index < elementa.data().campos.length;
@@ -165,7 +174,7 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
                   listaDeCamposIndisponiveis.push(elementa.data().campos[index])
                 }
               }
-              if (aulasHi <= aulasRhi && aulasRhi < aulasHf) {
+              if (aulasHi <= aulasRhi && aulasHf <= aulasRhf && aulasRhi < aulasHf) {
                 for (
                   let index = 0;
                   index < elementa.data().campos.length;
@@ -174,7 +183,25 @@ export async function retornaCamposIndisponíveisNaHora(procuraReserv) {
                   listaDeCamposIndisponiveis.push(elementa.data().campos[index])
                 }
               }
-              if (aulasHi <= aulasRhi && aulasRhf <= aulasHf) {
+              if (aulasHi >= aulasRhi && aulasHi < aulasRhf) {
+                for (
+                  let index = 0;
+                  index < elementa.data().campos.length;
+                  index++
+                ) {
+                  listaDeCamposIndisponiveis.push(elementa.data().campos[index])
+                }
+              }
+              if (aulasHf > aulasRhi && aulasHf <= aulasRhf) {
+                for (
+                  let index = 0;
+                  index < elementa.data().campos.length;
+                  index++
+                ) {
+                  listaDeCamposIndisponiveis.push(elementa.data().campos[index])
+                }
+              }
+              if (aulasHi <= aulasRhi  && aulasHf >= aulasRhf) {
                 for (
                   let index = 0;
                   index < elementa.data().campos.length;
@@ -867,6 +894,39 @@ export async function anularReservaPorUser(docId) {
     return null;
   }
     
+}
+
+export async function bloquearHorario(docId, hb, startDate, endDate) {
+
+  var listaAux = []
+  listaAux = [].concat(hb)
+  const timestampStart = firebase.firestore.Timestamp.fromDate(startDate)
+  const timestampEnd = firebase.firestore.Timestamp.fromDate(endDate)
+
+  listaAux.push({0: timestampStart,1 : timestampEnd})
+
+  try {
+    firebase.firestore().collection("localizacao").doc(docId).set({
+      horariosBloqueados: listaAux
+    }, {merge: true});
+    return true
+  } catch (error) {
+    console.error(error);
+    return  null;
+  }
+}
+
+export async function removerHorarioBloq(docId, hb) {
+
+  try {
+    firebase.firestore().collection("localizacao").doc(docId).set({
+      horariosBloqueados: hb
+    }, {merge: true});
+    return true
+  } catch (error) {
+    console.error(error);
+    return  null;
+  }
 }
 
 /*

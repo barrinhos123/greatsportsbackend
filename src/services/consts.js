@@ -8,10 +8,25 @@ export const historicoDeContratosCollection = "historicoDeContratos"
 export const historicoDePagamentos = "historicoDePagamentos"
 export const treinadoresCollection = "treinadores"
 
-export const diasDaSemana = ["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"]
+export const diasDaSemana = ["","Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"]
 
 export const nomesCampos = ['Lexus', 'NX', 'ES', 'RX', 'UX', 'LC'];
 export const niveis = ["5+", "5" , "5-" , "4+" , "4" , "4-","3+", "3" , "3-" , "2" , "1"]
+
+export const convertCamps = {
+  "Campo 1": "Lexus",
+  "Campo 2": "NX",
+  "Campo 3": "ES",
+  "Campo 4": "RX",
+  "Campo 5": "UX",
+  "Campo 6": "LC",
+};
+
+export const client_id = 'greatsportslda';
+export const client_secret = 'd07bfd992b0de1e518f497f4c7c19feef910ea1b';
+export const moloniUser = 'francisco.mota@greatpadel.pt';
+export const moloniPw = 'Great_516';
+export const companyID = "205427";
 
 //FB values --------------------
 export const semana = "Semana"

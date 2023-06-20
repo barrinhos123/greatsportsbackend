@@ -47,6 +47,7 @@ import { selectlocalizacao, setlocalizacao } from "store/localizacao/localizacao
 import { setclasses } from "store/localizacao/classes_reducer"
 import { settreinadores } from "store/treinadores/treinadores_reducer"
 import { Check } from "react-bootstrap-icons"
+import { convertCamps } from "services/consts"
 
 const CriarReservas = () => {
   function calcMaxDate(date) {
@@ -404,6 +405,9 @@ const CriarReservas = () => {
           } else {
 
           }
+
+          console.log("LISTA DE DESCONTOS");
+          console.log(listaDeDescontos);
           var listaDeDescontos = JSON.parse(listaDeDescontosStrgf)
           var listaDeDividePagamentos = [
             dividePagamento1,
@@ -679,7 +683,7 @@ const CriarReservas = () => {
                                   }
                                 }}
                               >
-                                {value}
+                                {convertCamps[value]}
                               </Button>
                             </Col>
                           )

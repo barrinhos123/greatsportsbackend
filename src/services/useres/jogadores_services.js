@@ -55,6 +55,93 @@ export async function criarUtilizador(email,password,nome,dataDN,cc) {
   }
 }
 
+export async function getAlllUsers() {
+  var listaAux = [];
+  try {
+      await firebase.firestore().collection("users").get().then((value) => {
+        value.docs.forEach((elem ,index) => {
+          
+          if(typeof elem.data().email != "undefined")
+          listaAux.push(elem.data().email) 
+        })
+      })
+     return listaAux;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function pesquisarComprasByRequestId(tipo,requestID) {
+  var tipoA = "pagamentosMultibanco";
+  var tipoB = "pagamentosMBway";
+  var email;
+  var json = {};
+
+  console.log(requestID);
+  
+  try {
+    if(tipo == "multibanco") { 
+    await firebase
+      .firestore()
+      .collection(tipoA).where("reference" , "==", requestID).limit(1)
+      .get().then(async (value) => {
+        var data  = value.docs.at(0).data();
+        json.email = data.email;
+        json.userID = data.userId
+        json.valor = data.valor
+        json.tipo = data.tipo
+
+        await firebase.firestore().collection("users").where("email", "==", json.email)
+        .limit(1).get().then((valueUser) => {
+          var dataUser  = valueUser.docs.at(0).data();
+          json.nome = dataUser.primeiroNome + " " + dataUser.ultimoNome;
+          json.nif = dataUser.nif
+          json.codigoMoloni = dataUser.codigoMoloni
+          json.morada = dataUser.morada
+          json.localidade = dataUser.localidade
+          json.country = dataUser.country
+          json.codigoPostal = dataUser.codigoPostal
+        })
+      });
+
+    } else {
+     await firebase
+      .firestore()
+      .collection(tipoB).where("referencia" , "==", requestID).limit(1)
+      .get().then(async (value) => {
+        var data  = value.docs.at(0).data();
+        json.email = data.email;
+        json.userID = data.userId
+        json.valor = data.valor
+        json.tipo = data.tipo
+
+        await firebase.firestore().collection("users").where("email", "==", json.email)
+        .limit(1).get().then((valueUser) => {
+          var dataUser  = valueUser.docs.at(0).data();
+          json.nome = dataUser.primeiroNome + " " + dataUser.ultimoNome;
+          json.nif = dataUser.nif
+          json.codigoMoloni = dataUser.codigoMoloni
+          json.morada = dataUser.morada
+          json.localidade = dataUser.localidade
+          json.country = dataUser.country
+          json.codigoPostal = dataUser.codigoPostal
+
+          console.log(json);
+        })
+      });
+     
+    }
+    return json;
+   
+  } catch (error) {
+    console.log(error)
+    return null;
+    
+  }
+  
+}
+
 export async function adicionarValorAoBancoDeHoras(pagamentoNumerario) {
   try {
     var pagamentoNum = new PagamentoNumerario()

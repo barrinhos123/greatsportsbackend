@@ -47,6 +47,8 @@ export async function createAula(newAula) {
         nome: aula.nome,
         campos: aula.campos,
         tipo: aula.tipo,
+        notas: '',
+        isAtiva: aula.isAtiva
         
       })
       .then(value => {
@@ -55,6 +57,19 @@ export async function createAula(newAula) {
   } catch (e) {
     console.error(e)
     return null
+  }
+}
+
+export async function removerAlunoDaAula(aulaID, alunos, alunosData){
+  try {
+    await firebase.firestore().collection(aulasCollection).doc(aulaID).update({
+      "alunos": alunos,
+      "alunoData": alunosData
+    })
+    return true;
+  } catch (error) {
+    print(error)
+    return false; 
   }
 }
 
@@ -82,6 +97,8 @@ export async function updateAula(newAula, aulaId) {
           nome: aula.nome,
           campos: aula.campos,
           tipo: aula.tipo,
+          notas: aula.notas,
+          isAtiva: aula.isAtiva
         },
         { merge: true }
       )
@@ -115,9 +132,15 @@ export async function adicinarAlunosAAula(usersID, aulaID) {
   }
 }
 
+function getRandomQrcode(min, max) {
+  return Math.floor(Math.random() * (max - min) + min)
+}
+
 export async function adicionarAlunoEData(email,alunoData, aulaID) {
   console.log(email)
   console.log(aulaID)
+  var qrCode = getRandomQrcode(1, 16777215)
+
   try {
     await firebase
       .firestore()
@@ -126,7 +149,7 @@ export async function adicionarAlunoEData(email,alunoData, aulaID) {
       .set(
         {
           alunos: firebase.firestore.FieldValue.arrayUnion(email),
-          alunoData: {[email]: {nome: alunoData.nome, cc: alunoData.cc, tel: alunoData.tel  }  }
+          alunoData: {[email]: {nome: alunoData.nome, cc: alunoData.cc, tel: alunoData.tel, qrCode: qrCode  }  }
         },
         { merge: true }
       )

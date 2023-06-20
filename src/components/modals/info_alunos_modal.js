@@ -1,22 +1,33 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Check, Trash2 } from "react-bootstrap-icons"
 import { Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, Row } from "reactstrap"
 import firebase from "firebase/app"
 import "firebase/firestore"
+import { adicionarAlunoEData, removerAlunoDaAula } from "services/aulas/aulas_services"
+import QRCode from "qrcode"
+
 
 function InfoAlunosModal(props) {
  
-    const [email, setEmail] = useState('')
-  const [tel, setTel] = useState('')
-  const [cc, setCC] = useState('')
-  const [nome, setNome] = useState('')
+    const [email, setEmail] = useState(props.email)
+    console.log(email)
+    const [tel, setTel] = useState(null )
+    const [cc, setCC] = useState(null)
+    const [nome, setNome] = useState(null) 
+    const [qrCode, setQrCode] = useState(null) 
 
+    
+ 
   const [colorBTN1, setColorBTN1] = useState("secondary")
+
+  var alunoData = props.aula.alunoData[email]
 
   async function emailCheck(email, nomeId, ccId) {
     var primeiroNome 
     var ultimoNome
     var isEmail1 = await checkIfUserExists(email)
+
+   
 
     if(Object.keys(isEmail1).length == 0){
       alert('O email não está registado')
@@ -42,6 +53,28 @@ function InfoAlunosModal(props) {
       return false;
     }
   }
+
+  function gerarQRCode(qrCode) {
+    QRCode.toDataURL(qrCode)
+      .then(url => {
+        console.log(url)
+        setQrCode(url)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
+
+  useEffect(() => {
+   setTel(props.aula.alunoData[email].tel )
+   setCC(props.aula.alunoData[email].cc)
+   setNome(props.aula.alunoData[email].nome) 
+
+   if( typeof props.aula.alunoData[email].qrCode != "undefined") {
+    gerarQRCode(props.aula.alunoData[email].qrCode.toString())
+   }
+    
+  }, [])
 
   const [isOpen, setIsOpen] = useState(false)
   return (
@@ -149,47 +182,61 @@ function InfoAlunosModal(props) {
                 
               </Row>
             </FormGroup>
+            <FormGroup>
+              <Row>
+                <Col md={2}>
+                  <p>QrCode</p>
+                </Col>
+                <Col md={10}>
+                <p>
+                  {qrCode != null ?    <img src={qrCode } alt="qrCode"></img> : null}
+             
+                </p>
+                </Col>
+                
+              </Row>
+            </FormGroup>
           </Form>
          
         </ModalBody>
         <ModalFooter>
-          <Button color="primary"
-            onClick={async () => {
-              var res = await remove(props.collection, props.docID)
-              if(res) {
-                alert('Aula Removida Com sucesso')
-                setIsOpen(!isOpen)
-              } else {
-                alert('Erro a remover a aula')
-                setIsOpen(!isOpen)
-              }
-              
-            }}
-          >
-            Remover Aluno
-          </Button>
-          <Button
+        <Button
             onClick={async() => {
-              
+
+              var listaAlunosAux = [].concat(props.aula.alunos)
+              var jsonAlunosDataAux = props.aula.alunoData;
+
+              const index = listaAlunosAux.indexOf(email);
+              const x = listaAlunosAux.splice(index, 1);
+
+              delete jsonAlunosDataAux[email];
+
+              console.log(`myArray values: ${listaAlunosAux}`);
+              console.log(jsonAlunosDataAux)
+
+              await removerAlunoDaAula(props.aulaId,listaAlunosAux,jsonAlunosDataAux )
+            
               var data = {}
               data.email = email
               data.cc = cc
               data.nome = nome
               data.tel = tel
-             await  adicionarAlunoEData(email, data,props.aulaId ).then((value) => {
+              
+              await  adicionarAlunoEData(email, data,props.aulaId ).then((value) => {
                 if(value) {
                   alert('Dados atualizados com sucesso')
                   setIsOpen(!isOpen)
                 } else {
-                  alert('Erro ao criar dados')
+                  alert('Erro ao atualizar dados')
                   setIsOpen(!isOpen)
                 }
-              })
+              }) 
             }}
             color="primary"
           >
             Editar Dados
           </Button>
+         
           <Button color="primary"
             onClick={async () => {
              
@@ -198,6 +245,33 @@ function InfoAlunosModal(props) {
           >
             Enviar QRCode
           </Button>
+          <Button color="danger"
+            onClick={async () => {
+              var listaAlunosAux = [].concat(props.aula.alunos)
+              var jsonAlunosDataAux = props.aula.alunoData;
+
+              const index = listaAlunosAux.indexOf(email);
+              const x = listaAlunosAux.splice(index, 1);
+
+              delete jsonAlunosDataAux[email];
+
+              console.log(`myArray values: ${listaAlunosAux}`);
+              console.log(jsonAlunosDataAux)
+
+              var res = await removerAlunoDaAula(props.aulaId,listaAlunosAux,jsonAlunosDataAux )
+              if(res) {
+                alert('Aluno Removido com sucesso')
+                setIsOpen(!isOpen)
+              } else {
+                alert('Erro a remover aluno')
+                setIsOpen(!isOpen)
+              } 
+              
+            }}
+          >
+            Remover Aluno
+          </Button>
+          
           <Button onClick={() => setIsOpen(!isOpen)}>Voltar</Button>
         </ModalFooter>
       </Modal>

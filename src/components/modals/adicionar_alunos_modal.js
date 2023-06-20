@@ -56,8 +56,6 @@ function AdicionarAlunos(props) {
     }
   }
 
-  console.log('Patig')
-
   return (
     <React.Fragment>
       <Button

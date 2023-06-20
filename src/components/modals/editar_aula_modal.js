@@ -26,8 +26,10 @@ import AdicionarAlunos from "./adicionar_alunos_modal"
 import AdicionarAlunosPAX from "./editar_alunos_PAX"
 import { useSelector } from "react-redux"
 import { selecttreinadores } from "store/treinadores/treinadores_reducer"
-import { niveis } from "services/consts"
+import { convertCamps, niveis } from "services/consts"
 import InfoAlunosModal from "./info_alunos_modal"
+import { retornaCamposIndisponíveisNaHora } from "services/reservas/reservas_services"
+import { ProcuraReserva } from "models/reserva"
 
 function EditarAulasModal(props) {
   const [isOpen, setIsOpen] = useState(false)
@@ -42,6 +44,16 @@ function EditarAulasModal(props) {
   const [professor, setProfessor] = useState(props.aula.professor)
   const [isLoading, setIsLoading] = useState(false)
   const [diaDaSemana, setDiaDaSemana] = useState(props.aula.weekDay)
+  const [isAtiva, setIsAtiva] = useState(props.aula.isAtiva)
+
+  const handleChange = event => {
+    if (event.target.checked) {
+      console.log('✅ Checkbox is checked');
+    } else {
+      console.log('⛔️ Checkbox is NOT checked');
+    }
+    setIsAtiva(current => !current);
+  }
 
   const [tipoDeAula, setTipoDeAula] = useState(props.aula.tipo)
 
@@ -49,24 +61,96 @@ function EditarAulasModal(props) {
   const [alunosData, setAlunosData] = useState(props.aula.alunosData)
   const [alunosPax, setAlunosPax] = useState(props.aula.alunosPAX)
 
+  const [notas, setNotas] = useState('')
+  
+
   const [camposDisp, setCamposDisp] = useState([])
   const numeroDeCampos = 6
 
   var weekday = new Array(7)
-  weekday[0] = "Segunda"
-  weekday[1] = "Terça"
-  weekday[2] = "Quarta"
-  weekday[3] = "Quinta"
-  weekday[4] = "Sexta"
-  weekday[5] = "Sábado"
-  weekday[6] = "Domingo"
+  weekday[0] = " "
+  weekday[1] = "Segunda"
+  weekday[2] = "Terça"
+  weekday[3] = "Quarta"
+  weekday[4] = "Quinta"
+  weekday[5] = "Sexta"
+  weekday[6] = "Sábado"
+  weekday[7] = "Domingo"
+
+/*   const [camposDisponiv, setCamposDisponiv] = useState([]) */
+
+  function minsDiffs(horaInicial, horaFinal, weekDay) {
+
+    var hi = new Date();
+    var hf = new Date();
+    var himins= horaInicial.substring(3,5)
+    var hihour= horaInicial.substring(0,2)
+    var hfmins= horaFinal.substring(3,5)
+    var hfhour= horaFinal.substring(0,2)
+    hi.setHours(hihour)
+    hi.setMinutes(himins)
+    hf.setHours(hfhour)
+    hf.setMinutes(hfmins)
+
+    var diffMs = (hf - hi); 
+    var duracao = Math.round(diffMs / 60000); // minutes
+    console.log( duracao + " minutes ");
+    
+    var today = hi.getDay()
+    if(today == 0) {
+      today = 7
+    }
+
+    if(today > weekDay) {
+      weekDay = weekDay + 7
+    }
+
+    var daysDiff = weekDay  - today;
+
+    console.log(hi.getDay())
+    console.log(weekDay)
+    console.log(daysDiff)
+
+    var dia = hi.getDate()
+    var mes = hi.getMonth()
+    var ano = hi.getFullYear()
+    var checkDate = new Date(ano, mes, dia + daysDiff, hihour, himins);
+    console.log(checkDate);
+
+    return [duracao, checkDate];
+  }
+
+  function removeCamposRepetidos(campoosInsdis) {
+
+    var listaDeCampos = []
+    var novaLista = []
+    for (var i = 1; i <= numeroDeCampos; i++) {
+      var stringAux = "Campo " + i
+      
+      if (campoosInsdis.includes(stringAux) == false  ) {
+        listaDeCampos.push(stringAux)
+      }
+    }
+    for(var l = 0; l < props.aula.campos.length; l++ ) {
+      listaDeCampos.push(props.aula.campos[l])
+    }
+    
+    setCamposDisp(listaDeCampos)
+  }
 
   const removeCamposEsc = value => {
     setCampoEscolhido(campoEscolhido.filter(item => item !== value))
   }
 
   useEffect(() => {
-    console.log(props)
+    console.log("props.aula.notas")
+    console.log(props.aula.notas)
+    if(typeof props.aula.notas != "undefined")  {
+    setNotas(props.aula.notas)
+    } else {
+    setNotas('')
+  }
+    /* console.log(props)
     var listAux = []
     for (let index = 1; index <= 6; index++) {
       var campo = "Campo " + index
@@ -76,7 +160,7 @@ function EditarAulasModal(props) {
     setCamposDisp(listAux)
     return () => {
       setCamposDisp([]) // This worked for me
-    }
+    } */
   }, [])
 
   return (
@@ -103,6 +187,17 @@ function EditarAulasModal(props) {
         </ModalHeader>
         <ModalBody>
           <Form>
+          <FormGroup check>
+          <Label check>
+            <Input  type="checkbox"
+            checked={isAtiva}
+            value={isAtiva}
+            onChange={handleChange}
+            id="isAulaAtiva"
+            name="subscribe"  />{' '}
+            Ativa
+          </Label>
+        </FormGroup>
             <FormGroup>
               <Row>
                 <Col md={3}>
@@ -167,32 +262,6 @@ function EditarAulasModal(props) {
                 ></TimePicker>
               </Col>
             </Row>
-            <Row>
-              <Col md={3}>
-                <p>Dia Inicial</p>
-              </Col>
-              <Col md={9}>
-                <DatePicker
-                  value={startDate}
-                  onChange={date => {
-                    setStartDate(date)
-                  }}
-                ></DatePicker>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={3}>
-                <p>Dia Final</p>
-              </Col>
-              <Col md={9}>
-                <DatePicker
-                  value={endDate}
-                  onChange={date => {
-                    setEndDate(date)
-                  }}
-                ></DatePicker>
-              </Col>
-            </Row>
             <FormGroup>
               <Row>
                 <Col md={3}>
@@ -236,7 +305,9 @@ function EditarAulasModal(props) {
                   <p>Professor</p>
                 </Col>
                 <Col md={9}>
-                  <Input onChange={(e) => {setProfessor(e.target.value)}} value={professor} type="select" name="select" id="professorInput">
+                  <Input onChange={(e) => {
+                    console.log(e.target.value);
+                    setProfessor(e.target.value)}} value={professor} type="select" name="select" id="professorInput">
                     {treinadores.map((elem,index) => {
                       return <option key={index}>{elem.nome}</option>
                     })}
@@ -278,9 +349,9 @@ function EditarAulasModal(props) {
                   <p>Nenhum aluno inscrito</p>
                 ) : (
                   alunos.map((aluno, index) => {
-                    return <Row style={{padding: "10px"}} key={index}>
+                    return <Row style={{padding: "10px"}} key={index +aluno }>
                        <Col md={2}>
-                       <InfoAlunosModal></InfoAlunosModal>
+                       <InfoAlunosModal key={index} aula={props.aula} email={aluno} aulaId={props.aulaId} ></InfoAlunosModal>
                       </Col>
                       <Col md={10}>
                         {aluno}
@@ -293,7 +364,30 @@ function EditarAulasModal(props) {
             </FormGroup>
             
             <FormGroup>
-              <p style={{paddingTop: "20px"}}>Campos</p>
+           
+              <Row style={{ paddingTop: "20px"}}><p style={{ fontWeight: "bold" }}>Campo da aula: { convertCamps[props.aula.campos] }</p></Row>
+              <Button style={{marginBottom: "20px"}} color="primary" onClick={async() => {
+                const reserva = minsDiffs(horaInicial,horaFinal, diaDaSemana );
+                  var procuraReserva = new ProcuraReserva()
+                  procuraReserva.duracaoDaReserva = reserva[0]
+                  procuraReserva.horaDaReserva = reserva[1]
+                  procuraReserva.localizacao = "Great Padel Vila Verde"
+                  
+                  var camposs = await retornaCamposIndisponíveisNaHora(
+                    procuraReserva
+                  )
+                  console.log("O campo que")
+                  console.log(camposs)
+
+                  removeCamposRepetidos(camposs) 
+                  /* var listaAux = [].concat(camposDisp);
+                  const index = listaAux.indexOf(props.aula.campos[0]);
+                  const x = listaAux.splice(index, 1);
+                  
+                  console.log(x)
+                  console.log(listaAux) */
+                  
+              }}>Mostrar campos disponíveis</Button>
               <Row>
                 {camposDisp.map((value, index) => {
                   return (
@@ -312,13 +406,15 @@ function EditarAulasModal(props) {
                           }
                         }}
                       >
-                        {value}
+                        { convertCamps[value]}
                       </Button>
                     </Col>
                   )
                 })}
               </Row>
             </FormGroup>
+            <Label for="exampleText">Notas</Label>
+          <Input type="textarea" name="text" value={notas} id="notasID" onChange={(e) =>  setNotas(e.target.value) } />
           </Form>
         </ModalBody>
         <ModalFooter>
@@ -336,6 +432,7 @@ function EditarAulasModal(props) {
             onClick={async () => {
               setIsLoading(true)
               var newAula = new Aula()
+              newAula.isAtiva = isAtiva
               newAula.estado = 1
               newAula.nome = document.getElementById("aulaInput").value
               newAula.alunos = []
@@ -348,20 +445,23 @@ function EditarAulasModal(props) {
               newAula.tipo = document.getElementById("tipoAula").value
               newAula.localizacao = document.getElementById("localSelect").value
               newAula.professor =
-                document.getElementById("professorInput").value
+              professor
               newAula.weekDay =
                 document.getElementById("weekdaySelect").selectedIndex
               newAula.nivel = nivel
+              newAula.notas = notas;
               console.log(newAula)
               /*  setIsOpen(!isOpen) */
               var aux = await updateAula(newAula, props.aulaId)
               setIsLoading(false)
               if (aux == true) {
                 alert("Aula criada com sucesso")
+                setIsOpen(!isOpen)
               } else {
                 alert(
                   "Erro a criar aula. Confirme se todos os dados estão preenchidos. Se sim, por favor tente mais tarde"
                 )
+                setIsOpen(!isOpen)
               }
             }}
           >

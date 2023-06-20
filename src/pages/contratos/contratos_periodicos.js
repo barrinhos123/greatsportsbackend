@@ -60,7 +60,6 @@ function ContratosPeriodicos() {
               <Col className="list-title" md={2}>
                 <h4>Periodo</h4>
               </Col>
-
               <Col className="list-title" md={2}>
                 <h4> Nr de Jogos</h4>
               </Col>

@@ -80,30 +80,42 @@ export function escolheOPrecoQueOUserVaiPagar(
     for (let index = 0; index < mapDosValoresDosUsers.length; index++) {
       var classe
       for (var element in mapDosValoresDosUsers[index].classes) {
-        console.log(element)
+        /* console.log(element) */
         classe = element
       }
+      
       console.log("eclescolheOPrecoQueOUserVaiPagarasse")
+      console.log(horaInicial);
       var asdasd = horaInicial.split(":")
       var asdasd1 = ("0" + asdasd[0]).slice(-2);
       var asdasd2 = ("0" + asdasd[1]).slice(-2);
+      console.log(asdasd);
+      console.log(asdasd1)
+      console.log(asdasd2)
       horaInicial = asdasd1 + ":" + asdasd2;
 
-      console.log(horaInicial)
+      /* console.log(horaInicial) */
 
       var descontoARetornar = null
       var horario = listaDeDescontos[classe][dia]
-      console.log(listaDeDescontos)
+      /* console.log(listaDeDescontos)
       console.log(classe)
-      console.log(dia)
+      console.log(dia) */
       for (var elemnt in horario) {
-        console.log("element")
-        console.log(elemnt)
-       
-        console.log(horaInicial)
+        /* console.log("element")
+        console.log(elemnt) */
+
         var horaI = elemnt.substring(0, 5)
         var horaf = elemnt.substring(8, 13)
-        if (horaI < horaInicial && horaInicial < horaf) {
+
+        console.log(elemnt)
+        console.log(horaI)
+        console.log(horaf)
+        var asd123 = horaInicial.replace(":" , "-");
+        
+        console.log(asd123)
+        
+        if (horaI <= asd123 && asd123 <= horaf) {
           descontoARetornar = listaDeDescontos[classe][dia][elemnt][duracao]
           if (listaDeEmailsAPagar[index] == true) {
             mapDosValoresDosUsers[index].temQuePagar = true

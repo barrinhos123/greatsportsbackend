@@ -4,7 +4,7 @@ import { Button, Col, Container, Input, Row } from "reactstrap"
 import { removeAula, verListaDeAulas } from "services/aulas/aulas_services"
 import firebase from "firebase/app"
 import "firebase/firestore"
-import { aulasCollection, diasDaSemana } from "services/consts"
+import { aulasCollection, convertCamps, diasDaSemana } from "services/consts"
 import AdicionarAulasModal from "components/modals/adicionar_aulas_modal"
 import { Trash2 } from "react-bootstrap-icons"
 import RemoveModal from "components/modals/remove_modal"
@@ -19,7 +19,7 @@ function AulasScreen() {
   const professores = useSelector(selecttreinadores)
   const [diaDaSemana, setDiaDaSemana] = useState(0)
 
-  const [trienador, setTreinador] = useState('')
+  const [trienador, setTreinador] = useState(professores[0].nome)
 
   const [filtroProfessor, setFiltroProfessor] = useState([])
   const [filtroCampo, setfiltroCampo] = useState([])
@@ -28,28 +28,29 @@ function AulasScreen() {
   const [listaFiltrada, setListaFiltrada] = useState([])
 
   var weekday = new Array(7)
-  weekday[0] = "Segunda"
-  weekday[1] = "Terça"
-  weekday[2] = "Quarta"
-  weekday[3] = "Quinta"
-  weekday[4] = "Sexta"
-  weekday[5] = "Sábado"
-  weekday[6] = "Domingo"
+  weekday[0] = " "
+  weekday[1] = "Segunda"
+  weekday[2] = "Terça"
+  weekday[3] = "Quarta"
+  weekday[4] = "Quinta"
+  weekday[5] = "Sexta"
+  weekday[6] = "Sábado"
+  weekday[7] = "Domingo"
 
   async function verListaDeAulas(localizacao) {
-    console.log("fetching a lista de aulas")
+   
     try {
       return firebase
         .firestore()
         .collection(aulasCollection)
         .where("localizacao", "==", localizacao)
         .onSnapshot(docsSnap => {
-          console.log("Fetching aulasd");
+          console.log("atig")
           var listaDeAulasAux = []
           for (const element of docsSnap.docs) {
             listaDeAulasAux.push(element)
           }
-          console.log(listaDeAulasAux);
+         
           setListaDeAulas(listaDeAulasAux)
           setListaFiltrada(listaDeAulasAux)
         })
@@ -60,9 +61,23 @@ function AulasScreen() {
   }
 
   function filtraPorProfessor(professor) {
-
-    var listaAux = listaDeAulas.filter((element) => element.data().professor == professor);
-    setListaFiltrada(listaAux); 
+    setListaFiltrada([])
+    var listaAux = [].concat([...listaDeAulas])
+    console.log(professor)
+    var listaAUx2 = []
+    setListaFiltrada([])
+    console.log("listaFiltrada")
+    console.log(listaFiltrada)
+    
+    for (let index = 0; index < listaAux.length; index++) {
+      if(listaAux[index].data().professor == professor){
+      console.log(listaAux[index].data().professor)
+      listaAUx2.push(listaAux[index])
+      }
+     
+    }
+    setListaFiltrada([])
+    setListaFiltrada(listaAUx2)
   }
 
   function filtraPorCampo() {}
@@ -75,6 +90,7 @@ function AulasScreen() {
   useEffect(() => {
     verListaDeAulas("Great Padel Vila Verde")
   }, [])
+
   return (
     <React.Fragment>
       <div className="page-content">
@@ -144,50 +160,58 @@ function AulasScreen() {
             <Col className="list-title" md={1}>
               Nível
             </Col>
-            <Col className="list-title" md={3}>
+            <Col className="list-title" md={2}>
               Professor
+            </Col>
+            <Col className="list-title" md={1}>
+              Estado
             </Col>
             <Col className="list-title" md={2}>
               Campos
             </Col>
           </Row>
           {listaFiltrada.map((aulaSnap, index) => {
-            var aula = aulaSnap.data()
-            console.log(aula.weekDay)
+            
             return (
-              <Row
-                key={index}
-                className={index % 2 == 0 ? "myList-even" : "myList-odd"}
+             
+              <Row  key={aulaSnap.id + "row"}
+              className={index % 2 == 0 ? "myList-even" : "myList-odd"}
+                  
+               
               >
                 <Col md={1}>
-                  <p>{weekday[aula.weekDay]}</p>
+                  <p>{weekday[aulaSnap.data().weekDay]}</p>
                 </Col>
                 <Col md={2}>
-                  <p>{aula.horaInicial + "-" + aula.horaFinal}</p>
+                  <p>{aulaSnap.data().horaInicial + "-" + aulaSnap.data().horaFinal}</p>
                 </Col>
-                <Col md={1}>{aula.alunos.length}</Col>
-                <Col md={1}>{aula.nivel}</Col>
-                <Col md={3}>
-                  <p>{aula.professor}</p>
+                <Col md={1}>{aulaSnap.data().alunos.length}</Col>
+                <Col md={1}>{aulaSnap.data().nivel}</Col>
+                <Col md={2}>
+                  <p>{aulaSnap.data().professor}</p>
+                </Col>
+                <Col  md={1}>
+                 {aulaSnap.data().isAtiva == true ? <p style={{color : "green"}}>Ativa</p> : <p style={{color : "red"}}>Inativa</p>  }
                 </Col>
                 <Col md={2}>
-                  {aula.campos.map((elem, index) => {
-                    return <p>{elem}</p>
+                  {aulaSnap.data().campos.map((elem, index) => {
+                    return <p>{ convertCamps[elem] }</p>
                   })}
                 </Col>
                 <Col md={2}>
-                  <RemoveModal
+                  <RemoveModal key={aulaSnap.id + "alunos" + aulaSnap.data().alunos.length} 
                     titulo="Tem a certeza que deseja remover esta aula?"
                     collection={aulasCollection}
-                    docID={aulaSnap.id}
+                    docID={listaFiltrada[index].id}
                     removeLabel={"Remover"}
                   ></RemoveModal>
-                  <EditarAulasModal
-                    aula={aula}
+                  <EditarAulasModal key={aulaSnap.id + "nivel" + aulaSnap.data().nivel}
+                    aula={listaFiltrada[index].data()}
                     aulaId={aulaSnap.id}
                   ></EditarAulasModal>
                 </Col>
               </Row>
+            
             )
           })}
         </Container>

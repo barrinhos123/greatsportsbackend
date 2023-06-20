@@ -14,6 +14,7 @@ import {
   ModalHeader,
   Row,
 } from "reactstrap"
+import { convertCamps } from "services/consts";
 import { checkIfUserExists, editarDadosReserva, retornaCamposIndisponíveisNaHora } from "services/reservas/reservas_services"
 
 function EditarReservasModal(props) {
@@ -512,7 +513,7 @@ function EditarReservasModal(props) {
                                   }
                                 }}
                               >
-                                {value}
+                                { convertCamps[value]}
                               </Button>
                             </Col>
                           )

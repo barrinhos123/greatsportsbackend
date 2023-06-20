@@ -23,37 +23,109 @@ import { createAula } from "services/aulas/aulas_services"
 import { PlusCircle } from "react-bootstrap-icons"
 import { useSelector } from "react-redux"
 import { selecttreinadores } from "store/treinadores/treinadores_reducer"
-import { niveis } from "services/consts"
+import { convertCamps, niveis } from "services/consts"
+import { ProcuraReserva } from "models/reserva"
+import { retornaCamposIndisponíveisNaHora } from "services/reservas/reservas_services"
 
 function AdicionarAulasModal(props) {
+
+  var asd = new Date()
   var treinadores = useSelector(selecttreinadores)
   const [isOpen, setIsOpen] = useState(false)
   const [horaInicial, setHoraInicial] = useState("00:00")
   const [horaFinal, setHoraFinal] = useState("00:00")
-  const [startDate, setStartDate] = useState()
-  const [endDate, setEndDate] = useState()
+  const [startDate, setStartDate] = useState( asd)
+  const [endDate, setEndDate] = useState(  asd)
   const [campoEscolhido, setCampoEscolhido] = useState([])
   const [nivel, setNivel] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  
+  const [isAtiva, setIsAtiva] = useState(true);
+
+  const handleChange = event => {
+    if (event.target.checked) {
+      console.log('✅ Checkbox is checked');
+    } else {
+      console.log('⛔️ Checkbox is NOT checked');
+    }
+    setIsAtiva(current => !current);
+  }
+
+  const [diaDaSemana, setDiaDaSemana] = useState(0)
 
   const [camposDisp, setCamposDisp] = useState([])
   const numeroDeCampos = 6
 
-  var weekday = new Array(7)
-  weekday[0] = "Segunda"
-  weekday[1] = "Terça"
-  weekday[2] = "Quarta"
-  weekday[3] = "Quinta"
-  weekday[4] = "Sexta"
-  weekday[5] = "Sábado"
-  weekday[6] = "Domingo"
+  var weekday = new Array(8)
+  weekday[0] = " "
+  weekday[1] = "Segunda"
+  weekday[2] = "Terça"
+  weekday[3] = "Quarta"
+  weekday[4] = "Quinta"
+  weekday[5] = "Sexta"
+  weekday[6] = "Sábado"
+  weekday[7] = "Domingo"
 
   const removeCamposEsc = value => {
     setCampoEscolhido(campoEscolhido.filter(item => item !== value))
   }
 
+  function minsDiffs(horaInicial, horaFinal, weekDay) {
+
+    var hi = new Date();
+    var hf = new Date();
+    var himins= horaInicial.substring(3,5)
+    var hihour= horaInicial.substring(0,2)
+    var hfmins= horaFinal.substring(3,5)
+    var hfhour= horaFinal.substring(0,2)
+    hi.setHours(hihour)
+    hi.setMinutes(himins)
+    hf.setHours(hfhour)
+    hf.setMinutes(hfmins)
+
+    var diffMs = (hf - hi); 
+    var duracao = Math.round(diffMs / 60000); // minutes
+    console.log( duracao + " minutes ");
+    
+    var today = hi.getDay()
+    if(today == 0) {
+      today = 7
+    }
+
+    if(today > weekDay) {
+      weekDay = weekDay + 7
+    }
+
+    var daysDiff = weekDay  - today;
+
+    console.log(hi.getDay())
+    console.log(weekDay)
+    console.log(daysDiff)
+
+    var dia = hi.getDate()
+    var mes = hi.getMonth()
+    var ano = hi.getFullYear()
+    var checkDate = new Date(ano, mes, dia + daysDiff, hihour, himins);
+    console.log(checkDate);
+
+    return [duracao, checkDate];
+  }
+
+  function removeCamposRepetidos(campoosInsdis) {
+
+    var listaDeCampos = []
+    var novaLista = []
+    for (var i = 1; i <= numeroDeCampos; i++) {
+      var stringAux = "Campo " + i
+      if (campoosInsdis.includes(stringAux) == false) {
+        listaDeCampos.push(stringAux)
+      }
+    }
+    setCamposDisp(listaDeCampos)
+  }
+
   useEffect(() => {
-    var listAux = []
+   /*  var listAux = []
     for (let index = 1; index <= 6; index++) {
       var campo = "Campo " + index
       listAux.push(campo)
@@ -62,7 +134,7 @@ function AdicionarAulasModal(props) {
     setCamposDisp(listAux)
     return () => {
       setCamposDisp([]) // This worked for me
-    }
+    } */
   }, [])
 
   return (
@@ -90,6 +162,17 @@ function AdicionarAulasModal(props) {
         </ModalHeader>
         <ModalBody>
           <Form>
+          <FormGroup check>
+          <Label check>
+            <Input  type="checkbox"
+            checked={isAtiva}
+            value={isAtiva}
+            onChange={handleChange}
+            id="isAulaAtiva"
+            name="subscribe"  />{' '}
+            Ativa
+          </Label>
+        </FormGroup>
             <FormGroup>
               <Row>
                 <Col md={3}>
@@ -105,6 +188,7 @@ function AdicionarAulasModal(props) {
                 </Col>
               </Row>
             </FormGroup>
+            
             <FormGroup>
             
             </FormGroup>
@@ -150,40 +234,17 @@ function AdicionarAulasModal(props) {
                 ></TimePicker>
               </Col>
             </Row>
-            <Row>
-              <Col md={3}>
-                <p>Dia Inicial</p>
-              </Col>
-              <Col md={9}>
-                <DatePicker
-                  value={startDate}
-                  onChange={date => {
-                    setStartDate(date)
-                  }}
-                ></DatePicker>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={3}>
-                <p>Dia Final</p>
-              </Col>
-              <Col md={9}>
-                <DatePicker
-                  value={endDate}
-                  onChange={date => {
-                    setEndDate(date)
-                  }}
-                ></DatePicker>
-              </Col>
-            </Row>
             <FormGroup>
+              
               <Row>
                 <Col md={3}>
                   <p>Dia da semana</p>
                 </Col>
                 <Col md={9}>
                   <Input
-                    onChange={() => {
+                    value={weekday[diaDaSemana]} 
+                    onChange={(e) => {
+                      setDiaDaSemana(document.getElementById("weekdaySelect").selectedIndex)
                       console.log(
                         document.getElementById("weekdaySelect").selectedIndex
                       )
@@ -251,7 +312,30 @@ function AdicionarAulasModal(props) {
               </Row>
             </FormGroup>
             <FormGroup>
-              <p>Campos</p>
+     
+              <p style={{paddingTop: "20px", fontWeight: "bold"}}>Campos</p>
+              
+              <Button style={{marginBottom: "20px"}} color="primary" onClick={async() => {
+                if(horaInicial == "00:00" ) {
+                  alert('É necessário escolher a hora inicial ');
+                } 
+                if(horaFinal == "00:00" ) {
+                  alert('É necessário escolher a hora final ');
+                } 
+                else if(diaDaSemana == 0) {
+                  alert('É necessário escolher o dia da semana ');
+                } else{
+                const reserva = minsDiffs(horaInicial,horaFinal, diaDaSemana );
+                  var procuraReserva = new ProcuraReserva()
+                  procuraReserva.duracaoDaReserva = reserva[0]
+                  procuraReserva.horaDaReserva = reserva[1]
+                  procuraReserva.localizacao = "Great Padel Vila Verde"
+                  
+                  var camposs = await retornaCamposIndisponíveisNaHora(
+                    procuraReserva
+                  )
+                  removeCamposRepetidos(camposs) }
+              }}>Mostrar campos disponíveis</Button>
               <Row>
                 {camposDisp.map((value, index) => {
                   return (
@@ -270,7 +354,7 @@ function AdicionarAulasModal(props) {
                           }
                         }}
                       >
-                        {value}
+                        { convertCamps[value]}
                       </Button>
                     </Col>
                   )
@@ -294,6 +378,7 @@ function AdicionarAulasModal(props) {
             onClick={async () => {
               setIsLoading(true)
               var newAula = new Aula()
+              newAula.isAtiva = isAtiva
               newAula.estado = 1
               newAula.nome = document.getElementById("aulaInput").value
               newAula.alunos = []
