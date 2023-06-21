@@ -119,11 +119,11 @@ const SidebarContent = props => {
                     {props.t("Feriados")}
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/moloni">
                     {props.t("Moloni")}
                   </Link>
-                </li>
+                </li> */}
                
               </ul>
             </li>

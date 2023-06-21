@@ -106,8 +106,8 @@ const App = props => {
             })
         })
       } catch (error) {
-        console.log("ERRO FODA");
-        console.log("error");
+        console.log("ERRO");
+        console.log(error);
       }
       
     }
